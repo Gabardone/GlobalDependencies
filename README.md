@@ -1,17 +1,18 @@
 # MiniDePin
+[![Swift Package Manager compatible](https://img.shields.io/badge/SPM-compatible-4BC51D.svg?style=flat)](https://github.com/apple/swift-package-manager)
 
 This is a simple dependency injection framework good for managing global dependencies (app-level singletons basically)
 in small and medium-sized apps. It has been used successfully in several small personal projects and a medium sized
 commercially released app.
 
 It's meant to add as little friction as possible to the task of injecting dependencies so early stage apps can still
-take on the benefits of dependency injectino (better testability, easier maintenance and changes in dependencies)
+take on the benefits of dependency injection (better testability, easier maintenance and changes in dependencies)
 without slowing down the pace of development.
 
 ## Adoption
 
 If the instructions here are not clear enough you can also check additional instructions on how to use the dependency
-injection system in `Depdendencies.swift` as well as an example of use in the test target of the framework.
+injection system in `Dependencies.swift` as well as an example of use in the test target of the framework.
 
 For the sake of this example let's assume we want to do dependency injection on `URLSession' so we can mock network
 data fetch in tests.
