@@ -195,18 +195,46 @@ class ImageCacheTests: XCTestCase {
 
 ```
 
+## Dependency Micropackages
+
+In addition to the base MiniDePin package itself, we are including a number of common system framework façade
+dependencies that can be quickly and easily adopted to abstract away common hard dependencies and make the resulting
+logic far more testable than otherwise.
+
+These are mostly tiny so we call them depdendency micropackages (ok, the jokes write themselves). They are also
+accompanied by a `*testing` library that takes care of the busywork of creating a mock class for testing, you can
+`@testable import` those into your test files to use the mocks.
+
+The depdendency micropackages are built up as needed by other projects so they are not going to do a complete wrap of
+the abstracted API (unless all of it was needed at some point). Feel free to copy and expand if needed, even better if
+you bring back a PR with additions.
+
+### LocationDependency
+
+This dependency wraps `CLLocationManager` use. Since `CLLocationManager` has some ornery limitations on its use in
+concurrenct contexts it also takes care of being usable from outside a running runloop (usually the main one). Its
+implementation bounces back operations to the main queue but none of the façaded ones block the queue noticeably.
+
 ## Requirements
 
-MiniDePin doesn't have much in the way of dependencies itself so it works in whatever the tools support.
+MiniDePin doesn't have much in the way of dependencies itself so it can work in whatever the tools support. However some
+of the dependency micropackages require Combine and other newer APIs so the minimum is set to those platform versions.
 
-The dependency micropackages may have different version and platform requirements.
+If SPM every allows for varying deployment requirements per product the base library should be able to just roll out on
+anything supported by the tools.
+
+### Tools:
 
 * Xcode 14.3 or later.
-* iOS 11 or later.
-* tvOS 11 or later.
-* watchOS 4 or later.
-* macOS 10.13 or later.
 * Swift 5.7 or later.
+
+### Platforms:
+
+* iOS 14 or later.
+* macOS Catalyst 14 or later (but why?).
+* macOS 11 or later.
+* tvOS 14 or later.
+* watchOS 7 or later.
 
 ## Installation
 
