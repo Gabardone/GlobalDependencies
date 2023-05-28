@@ -1,5 +1,7 @@
 # MiniDePin
 [![Swift Package Manager compatible](https://img.shields.io/badge/SPM-compatible-4BC51D.svg?style=flat)](https://github.com/apple/swift-package-manager)
+[![MIT License](https://img.shields.io/badge/SPM-compatible-4BC51D.svg?style=flat)](https://mit-license.org/)
+[![Platforms](https://img.shields.io/badge/platform-ios%20%7C%20osx%20%7C%20watchos%20%7C%20tvos-%23989898)](https://apple.com/developer)
 
 This is a simple dependency injection framework good for managing global dependencies (app-level singletons basically)
 in small and medium-sized apps. It has been used successfully in several small personal projects and a medium sized
@@ -192,3 +194,49 @@ class ImageCacheTests: XCTestCase {
 }
 
 ```
+
+## Requirements
+
+MiniDePin doesn't have much in the way of dependencies itself so it works in whatever the tools support.
+
+The dependency micropackages may have different version and platform requirements.
+
+* Xcode 14.3 or later.
+* iOS 11 or later.
+* tvOS 11 or later.
+* watchOS 4 or later.
+* macOS 10.13 or later.
+* Swift 5.7 or later.
+
+## Installation
+
+MiniDePin is currently only supported through Swift Package Manager.
+
+If developing your own package, you can add the following lines to your `Package.swift` file:
+
+```swift
+dependencies: [
+    .package(url: "https://github.com/Gabardone/MiniDepIn", from: "1.0.0"),
+]
+```
+
+To add to an Xcode project, paste `https://github.com/Gabardone/MiniDepIn` into the URL field for a new package and
+specify "Up to next major version" starting with the current one.
+
+## Contributing
+
+While the MiniDePin package itself works "as-is" and is unlikely to get major changes going forward, I know better than
+to think it can't be improved, so suggestions are welcome especially if they come with examples.
+
+The dependency micropackages can always use more work as they are built as needed. If you find yourself using one but
+improving it, feel free to submit a PR with the changes. Same if you build a generic one for a system service that
+other people could stand to use.
+
+Beyond that just take to heart the baseline rules presented in  [contributing guidelines](Contributing.md) prior to
+submitting a Pull Request.
+
+Thanks, and happy queueing!
+
+## Developing
+
+Double-click on `Package.swift` in the root of the repository to open the project in Xcode.
