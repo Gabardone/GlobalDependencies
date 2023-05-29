@@ -14,7 +14,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/Gabardone/SwiftUX",
       "state" : {
-        "revision" : "b5f0e82ba23a2815d3fba6097348d57d107aac12"
+        "revision" : "b5f0e82ba23a2815d3fba6097348d57d107aac12",
+        "version" : "0.0.2-alpha"
       }
     }
   ],
