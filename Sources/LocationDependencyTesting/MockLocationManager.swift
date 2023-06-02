@@ -21,11 +21,16 @@ import XCTest
  vast majority of cases.
  */
 open class MockLocationManager: LocationManager {
-    /**
-     Throw this when the error is due to the mock setup not matching the test behavior.
-     */
     public enum MockError: Error {
+        /**
+         Throw this when the error is due to the mock setup not matching the test behavior.
+         */
         case unexpectedCall(String)
+
+        /**
+         Throw this in tests when a thrown error is expected
+         */
+        case mock
     }
 
     // MARK: - LocationManager Adoption
