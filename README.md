@@ -215,6 +215,14 @@ This dependency wraps `CLLocationManager` use. Since `CLLocationManager` has som
 concurrenct contexts it also takes care of being usable from outside a running runloop (usually the main one). Its
 implementation bounces back operations to the main queue but none of the façaded ones block the queue noticeably.
 
+### NetworkDependency
+
+Wraps simple data fetch from network as an async operation. The default system implementation just uses
+`URLSession.shared.data(from:)`.
+
+May be expanded in the future to abstract away other
+network operations like uploading data or web sockets.
+
 ## Requirements
 
 MiniDePin doesn't have much in the way of dependencies itself so it can work in whatever the tools support. However some
