@@ -15,51 +15,8 @@ import XCTest
  Tests the common location manager flows.
  */
 final class LocationManagerTests: XCTestCase {
-    /*
-     {
-         switch authorizationStatus.value {
-         case .authorizedAlways, .authorizedWhenInUse:
-             // We're good to get the location.
-             break
+    private static let petersCreek = CLLocation(latitude: 37.27661, longitude: -122.19913) // You should go there.
 
-         case .notDetermined:
-             // Present user UI.
-             let _: Void = await withCheckedContinuation { continuation in
-                 var subscription: AnyCancellable?
-                 subscription = authorizationStatus.updates.sink { _ in
-                     subscription?.cancel()
-                     continuation.resume()
-                 }
-                 requestWhenInUseAuthorization()
-             }
-
-             // Once we land here the auth status has changed, so let's try again.
-             try await verifyUserPermissionToAccessLocation()
-
-         case .denied, .restricted:
-             // Seeing weird behavior with custom error types so throwing an NSError instead. Needs further research.
-             let localizedDescription = errorMessageForCLAuthStatus(
-                 authStatus: authorizationStatus.value
-             )
-             throw NSError(
-                 domain: Self.ErrorDomain,
-                 code: 7777,
-                 userInfo: [NSLocalizedDescriptionKey: localizedDescription]
-             )
-
-         @unknown default:
-             // Seeing weird behavior with custom error types so throwing an NSError instead. Needs further research.
-             let localizedDescription = errorMessageForCLAuthStatus(
-                 authStatus: authorizationStatus.value
-             )
-             throw NSError(
-                 domain: Self.ErrorDomain,
-                 code: 7777,
-                 userInfo: [NSLocalizedDescriptionKey: localizedDescription]
-             )
-         }
-     }
-     */
     /**
      Tests that if the user is already authorized to access location then `verifyUserPermissionToAccessLocation` just
      returns (the test would fail if the call throws)
@@ -147,7 +104,7 @@ final class LocationManagerTests: XCTestCase {
         let mockLocationManager = MockLocationManager()
         mockLocationManager.authorizationStatus = WritableProperty.root(initialValue: .authorizedAlways)
 
-        let expectedlocation = CLLocation(latitude: 37.27661, longitude: -122.19913) // You should go there.
+        let expectedlocation = Self.petersCreek
         let locationProperty: WritableProperty<TrackedLocation> = .root(initialValue: .unknown)
         mockLocationManager.currentLocation = locationProperty
 
@@ -173,7 +130,7 @@ final class LocationManagerTests: XCTestCase {
         let mockLocationManager = MockLocationManager()
         mockLocationManager.authorizationStatus = WritableProperty.root(initialValue: .authorizedAlways)
 
-        let expectedlocation = CLLocation(latitude: 37.27661, longitude: -122.19913) // You should go there.
+        let expectedlocation = Self.petersCreek
         let locationProperty: WritableProperty<TrackedLocation> = .root(initialValue: .located(expectedlocation))
         mockLocationManager.currentLocation = locationProperty
 
