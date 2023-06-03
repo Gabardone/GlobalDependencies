@@ -6,12 +6,18 @@
 //
 
 import Foundation
-import NetworkDependency
 
 /**
  Simple mock for network data access. Use it in tests as an override of `NetworkDependency`.
- */
-struct MockNetwork {
+
+ This should go into its own package but that causes issues where the compiler gets confused in test targets and
+ dependency overrides fail to work.
+  */
+public struct MockNetwork {
+    public init(dataTaskOverride: ((URL) -> Task<Data, Error>)? = nil) {
+        self.dataTaskOverride = dataTaskOverride
+    }
+
     /**
      Throw this when the error is due to the mock setup not matching the test behavior.
      */
@@ -23,7 +29,7 @@ struct MockNetwork {
 }
 
 extension MockNetwork: Network {
-    func dataTask(url: URL) -> Task<Data, Error> {
+    public func dataTask(url: URL) -> Task<Data, Error> {
         if let dataTaskOverride {
             return dataTaskOverride(url)
         } else {

@@ -8,9 +8,7 @@
 import Combine
 import CoreLocation
 import Foundation
-import LocationDependency
 import SwiftUX
-import XCTest
 
 /**
  A mock implementation of `LocationManager`.
@@ -19,6 +17,9 @@ import XCTest
 
  Everything is declared `open` for maximum flexibility in test setups, but setting the properties should work for the
  vast majority of cases.
+
+ This should go into its own package but that causes issues where the compiler gets confused in test targets and
+ dependency overrides fail to work.
  */
 open class MockLocationManager: LocationManager {
     public enum MockError: Error {
@@ -78,6 +79,6 @@ open class MockLocationManager: LocationManager {
     // MARK: - Utilities
 
     public static func mockFailure(function: String = #function) {
-        XCTFail("Unexpected call to \(function)")
+        assertionFailure("Unexpected call to \(function)")
     }
 }

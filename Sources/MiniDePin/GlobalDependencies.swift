@@ -21,11 +21,13 @@ public struct GlobalDependencies {
      */
     public static let `default` = GlobalDependencies()
 
+    public typealias DependencyKeyPath = PartialKeyPath<GlobalDependencies>
+
     /**
      Dependency storage.
      - Note: Investigate using `GlobalDependencies` as the root type once Swift 5.6 is out.
      */
-    private(set) var overrides = [AnyKeyPath: Any]()
+    private(set) var overrides = [DependencyKeyPath: Any]()
 }
 
 // MARK: - Dependency resolution
@@ -42,7 +44,7 @@ public extension GlobalDependencies {
      - Parameter defaultImplementation: The default implementation to return if there is no override.
      - Returns: The resolved dependency for the `keyPath` property.
      */
-    func resolveDependency<T>(forKeyPath keyPath: KeyPath<GlobalDependencies, T>, defaultImplementation: T) -> T {
+    func resolveDependency<T>(forKeyPath keyPath: DependencyKeyPath, defaultImplementation: @autoclosure () -> T) -> T {
         if let existingOverride = overrides[keyPath] {
             if let typedOverride = existingOverride as? T {
                 return typedOverride
@@ -53,7 +55,7 @@ public extension GlobalDependencies {
         }
 
         // Fallback to the default implementation.
-        return defaultImplementation
+        return defaultImplementation()
     }
 }
 
@@ -79,7 +81,7 @@ public extension GlobalDependencies {
      - Parameter keyPath The accessor's keypath.
      - Parameter value The overriding instance, of the same —usually `protocol`— type.
      */
-    mutating func override<Value>(keyPath: KeyPath<some Dependencies, Value>, with value: Value) {
+    mutating func override<Value>(keyPath: KeyPath<GlobalDependencies, Value>, with value: Value) {
         overrides[keyPath] = value
     }
 

@@ -23,16 +23,8 @@ let package = Package(
             targets: ["LocationDependency"]
         ),
         .library(
-            name: "LocationDependencyTesting",
-            targets: ["LocationDependencyTesting"]
-        ),
-        .library(
             name: "NetworkDependency",
             targets: ["NetworkDependency"]
-        ),
-        .library(
-            name: "NetworkDependencyTesting",
-            targets: ["NetworkDependencyTesting"]
         )
     ],
     dependencies: [
@@ -54,21 +46,13 @@ let package = Package(
             name: "LocationDependency",
             dependencies: ["MiniDePin", "SwiftUX"]
         ),
-        .target(
-            name: "LocationDependencyTesting",
-            dependencies: ["LocationDependency", "MiniDePin", "SwiftUX"]
-        ),
         .testTarget(
             name: "LocationDependencyTests",
-            dependencies: ["MiniDePin", "LocationDependency", "LocationDependencyTesting", "SwiftUX"]
+            dependencies: ["MiniDePin", "LocationDependency", "SwiftUX"]
         ),
         .target(
             name: "NetworkDependency",
             dependencies: ["MiniDePin"]
-        ),
-        .target(
-            name: "NetworkDependencyTesting",
-            dependencies: ["NetworkDependency", "MiniDePin"]
         )
     ]
 )
