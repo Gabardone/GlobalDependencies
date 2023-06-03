@@ -87,7 +87,7 @@ public protocol LocationManager {
 
 public extension LocationManager {
     static var ErrorDomain: String {
-        "GoogleAPIErrorDomain"
+        "LocationManagerErrorDomain"
     }
 
     /**

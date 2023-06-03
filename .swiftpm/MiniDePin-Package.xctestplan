@@ -1,0 +1,31 @@
+{
+  "configurations" : [
+    {
+      "id" : "C46EE4F8-84F4-46A2-ACA7-E301FF20D279",
+      "name" : "Test Scheme Action",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+
+  },
+  "testTargets" : [
+    {
+      "target" : {
+        "containerPath" : "container:",
+        "identifier" : "LocationDependencyTests",
+        "name" : "LocationDependencyTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:",
+        "identifier" : "MiniDePinTests",
+        "name" : "MiniDePinTests"
+      }
+    }
+  ],
+  "version" : 1
+}
