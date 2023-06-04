@@ -34,7 +34,7 @@ protocol TestServiceDependency: Dependencies {
 
 /// Extend GlobalDependencies to implement `TestServiceDependency` (README Adoption #4)
 extension GlobalDependencies: TestServiceDependency {
-    var testService: TestService {
+    var testService: any TestService {
         resolveDependency(forKeyPath: \.testService, defaultImplementation: DefaultTestService.shared)
     }
 }

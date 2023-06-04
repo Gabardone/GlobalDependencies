@@ -6,8 +6,7 @@
 //
 
 import CoreLocation
-import LocationDependency
-@testable import LocationDependencyTesting
+@testable import LocationDependency
 import SwiftUX
 import XCTest
 

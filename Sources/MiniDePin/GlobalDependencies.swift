@@ -41,10 +41,14 @@ public extension GlobalDependencies {
 
      It will return the override value if any has been set, or the default one if not.
      - Parameter keyPath: Key path to the dependency property.
-     - Parameter defaultImplementation: The default implementation to return if there is no override.
+     - Parameter defaultImplementation: The default implementation to return if there is no override. It is an
+     autoclosure so creation of the default can happen lazily and thus avoided if overwritten.
      - Returns: The resolved dependency for the `keyPath` property.
      */
-    func resolveDependency<T>(forKeyPath keyPath: DependencyKeyPath, defaultImplementation: @autoclosure () -> T) -> T {
+    func resolveDependency<T>(
+        forKeyPath keyPath: KeyPath<GlobalDependencies, T>,
+        defaultImplementation: @autoclosure () -> T
+    ) -> T {
         if let existingOverride = overrides[keyPath] {
             if let typedOverride = existingOverride as? T {
                 return typedOverride
