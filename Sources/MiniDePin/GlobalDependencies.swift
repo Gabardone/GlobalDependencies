@@ -49,9 +49,6 @@ public extension GlobalDependencies {
         forKeyPath keyPath: KeyPath<GlobalDependencies, T>,
         defaultImplementation: @autoclosure () -> T
     ) -> T {
-
-
-        
         if let existingOverride = overrides[keyPath] {
             if let typedOverride = existingOverride as? T {
                 return typedOverride

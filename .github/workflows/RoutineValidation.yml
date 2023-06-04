@@ -8,7 +8,7 @@ on:
 
 jobs:
   format-validation:
-    name: Format Validation
+    name: Format
     runs-on: macos-13
     steps:
       - name: Checkout Repo
@@ -17,3 +17,13 @@ jobs:
         run: sudo xcode-select --switch /Applications/Xcode_14.3.0.app/Contents/Developer
       - name: Verify Format
         run: swiftformat . --lint --dryrun
+  linter-validation:
+    name: Linter
+    runs-on: macos-13
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v3
+      - name: Select Xcode Version
+        run: sudo xcode-select --switch /Applications/Xcode_14.3.0.app/Contents/Developer
+      - name: Verify Format
+        run: swiftlint . --quiet
