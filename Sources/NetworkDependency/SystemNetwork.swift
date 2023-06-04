@@ -8,14 +8,23 @@
 import Foundation
 
 /**
- An implementation of the `Network` protocol that uses the system facilities, namely `URLSession.shared` to fetch data.
+ An implementation of the `Network` protocol that uses the system facilities, namely a `URLSession` instance, to fetch
+ data.
+
+ By default they are created using `URLSession.shared` but the option exists to use a different one.
  */
-struct SystemNetwork {}
+public struct SystemNetwork {
+    init(urlSession: URLSession = .shared) {
+        self.urlSession = urlSession
+    }
+
+    let urlSession: URLSession
+}
 
 extension SystemNetwork: Network {
-    func dataTask(url: URL) -> Task<Data, Error> {
+    public func dataTask(url: URL) -> Task<Data, Error> {
         Task {
-            let (data, _) = try await URLSession.shared.data(from: url)
+            let (data, _) = try await urlSession.data(from: url)
             return data
         }
     }
