@@ -16,4 +16,4 @@ jobs:
       - name: Select Xcode Version
         run: sudo xcode-select --switch /Applications/Xcode_14.3.0.app/Contents/Developer
       - name: Verify Format
-        run: swiftformat . --dryrun
+        run: swiftformat . --lint --dryrun
