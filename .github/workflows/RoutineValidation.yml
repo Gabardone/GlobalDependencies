@@ -16,7 +16,7 @@ jobs:
       - name: Select Xcode Version
         run: sudo xcode-select --switch /Applications/Xcode_14.3.0.app/Contents/Developer
       - name: Verify Format
-        run: swiftformat . --lint --dryrun
+        run: swiftformat Sources Tests --lint --dryrun
   linter-validation:
     name: Linter
     runs-on: macos-13
@@ -25,5 +25,15 @@ jobs:
         uses: actions/checkout@v3
       - name: Select Xcode Version
         run: sudo xcode-select --switch /Applications/Xcode_14.3.0.app/Contents/Developer
-      - name: Verify Format
-        run: swiftlint . --quiet
+      - name: Run Linter
+        run: swiftlint Sources Tests --quiet 
+  build-and-test-package:
+    name: Build and Test
+    runs-on: macos-13
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v3
+      - name: Select Xcode Version
+        run: sudo xcode-select --switch /Applications/Xcode_14.3.0.app/Contents/Developer
+      - name: Build and Test
+        run: xcrun swift test -c release

@@ -52,7 +52,7 @@ final class LocationManagerTests: XCTestCase {
 
                 Task {
                     changedExpectation.fulfill()
-                    authorizationStatusProperty.value = .authorizedWhenInUse
+                    authorizationStatusProperty.value = .authorizedAlways // Not what iOS would do but builds on mac.
                 }
             }
         }

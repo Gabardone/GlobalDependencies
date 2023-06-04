@@ -101,9 +101,15 @@ public extension LocationManager {
      */
     func verifyUserPermissionToAccessLocation() async throws {
         switch authorizationStatus.value {
+        #if os(macOS)
+        case .authorizedAlways:
+            // We're good to get the location.
+            break
+        #else
         case .authorizedAlways, .authorizedWhenInUse:
             // We're good to get the location.
             break
+        #endif
 
         case .notDetermined:
             // Present user UI.
