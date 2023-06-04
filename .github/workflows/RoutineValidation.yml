@@ -28,7 +28,17 @@ jobs:
       - name: Run Linter
         run: swiftlint Sources Tests --quiet 
   build-and-test-package:
-    name: Build and Test
+    strategy:
+      matrix:
+        platforms: [
+          'platform=macOS',
+          'platform=macOS,variant=Mac Catalyst',
+          'platform=iOS Simulator,OS=16.4,name=iPhone 14 Pro',
+          'platform=tvOS Simulator,OS=16.4,name=Apple TV 4K',
+          'platform=watchOS Simulator,OS=9.4,name=Apple Watch Series 8 (45mm)'
+        ]
+      fail-fast: false
+    name: Build and Test ${{ matrix.platforms }}
     runs-on: macos-13
     steps:
       - name: Checkout Repo
@@ -36,4 +46,4 @@ jobs:
       - name: Select Xcode Version
         run: sudo xcode-select --switch /Applications/Xcode_14.3.0.app/Contents/Developer
       - name: Build and Test
-        run: xcrun swift test -c release
+        run: xcodebuild test -scheme ${{ github.event.repository.name }}-Package -destination '${{ matrix.platforms }}'

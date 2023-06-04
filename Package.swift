@@ -4,7 +4,7 @@
 import PackageDescription
 
 let package = Package(
-    name: "MiniDePin",
+    name: "MiniDepIn",
     platforms: [ // We require Combine for some of the dependency micropackages so that limits what we support.
         .iOS(.v14),
         .macCatalyst(.v14),
