@@ -1,14 +1,14 @@
 //
-//  MiniDePinTests.swift
+//  GlobalDependenciesTests.swift
 //
 //
 //  Created by Óscar Morales Vivó on 2/5/23.
 //
 
-@testable import MiniDePin
+@testable import GlobalDependencies
 import XCTest
 
-final class MiniDePinTests: XCTestCase {
+final class GlobalDependenciesTests: XCTestCase {
     override func setUp() {
         // Replace the "singleton" one in case the prior test messed with it.
         DefaultTestService.shared = DefaultTestService()

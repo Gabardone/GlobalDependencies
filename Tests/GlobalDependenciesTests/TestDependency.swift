@@ -6,7 +6,7 @@
 //
 
 import Foundation
-@testable import MiniDePin
+@testable import GlobalDependencies
 import XCTest
 
 /// A Dummy dependency protocol to test out the dependency injection system. (README Adoption #1)

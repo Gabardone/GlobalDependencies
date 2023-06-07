@@ -1,4 +1,4 @@
-# MiniDePin
+# GlobalDependencies
 [![Swift Package Manager compatible](https://img.shields.io/badge/SPM-compatible-4BC51D.svg?style=flat)](https://github.com/apple/swift-package-manager)
 [![MIT License](https://img.shields.io/badge/SPM-compatible-4BC51D.svg?style=flat)](https://mit-license.org/)
 [![Platforms](https://img.shields.io/badge/platform-ios%20%7C%20osx%20%7C%20watchos%20%7C%20tvos-%23989898)](https://apple.com/developer)
@@ -58,6 +58,7 @@ extension URLSession: RemoteDataFetch {
 
 The dependency will be vended through a property, which will hide its implementation behind the protocol we declared on
 step #1. As follows for the example:
+
 ```swift
 protocol RemoteDataFetchDependency {
     var remoteDataFetch: any RemoteDataFetch { get }
@@ -90,6 +91,7 @@ if a component's `dependency` property is the union of half a dozen protocols yo
 
 Let's assume we're creating an image cache (probably a dependency itself but we'll leave that off the example) that
 needs both network and local (via `protocol LocalDataFetchDependency`) access to get its data. It would look as follows:
+
 ```swift
 class ImageCache {
     [...]
@@ -108,6 +110,7 @@ you can declare a `typealias` with the union of dependencies needed and use that
 initializers (not shown in these examples).
 
 For our `ImageCache` type it would look as follows:
+
 ```swift
 class ImageCache {
     [...]
@@ -156,6 +159,7 @@ dependency-vended protocol and overwrite the dependency with it.
 Just like any other mock, really. Either build them on the fly or build a configurable one for use in several tests.
 
 Let's take the latter approach for our example (READMEINAC = README Is Not a Compiler).
+
 ```swift
 class MockRemoteDataFetch: RemoteDataFetch {
     var dataFromURLOverride: ((URL) async throws -> Data)?
@@ -197,82 +201,66 @@ class ImageCacheTests: XCTestCase {
 
 ## Dependency Micropackages
 
-In addition to the base MiniDePin package itself, we are including a number of common system framework façade
-dependencies that can be quickly and easily adopted to abstract away common hard dependencies and make the resulting
-logic far more testable than otherwise.
+In addition to the base GlobalDependencies package itself, we are building as needed a number of common system framework
+façade dependencies that can be quickly and easily adopted to abstract away common hard dependencies and make the
+resulting logic far more testable than otherwise.
 
-These are mostly tiny so we call them depdendency micropackages (ok, the jokes write themselves). They are also
-accompanied by a `*testing` library that takes care of the busywork of creating a mock class for testing, you can
-`@testable import` those into your test files to use the mocks.
+These are mostly tiny so we call them depdendency micropackages (ok, the jokes write themselves). It's easy enough to
+find those we built ourselves by just looking at the repo list for the account and checking those that are named
+`*Dependency`.
 
-The depdendency micropackages are built up as needed by other projects so they are not going to do a complete wrap of
-the abstracted API (unless all of it was needed at some point). Feel free to copy and expand if needed, even better if
-you bring back a PR with additions.
-
-### LocationDependency
-
-This dependency wraps `CLLocationManager` use. Since `CLLocationManager` has some ornery limitations on its use in
-concurrenct contexts it also takes care of being usable from outside a running runloop (usually the main one). Its
-implementation bounces back operations to the main queue but none of the façaded ones block the queue noticeably.
-
-### NetworkDependency
-
-Wraps simple data fetch from network as an async operation. The default system implementation just uses
-`URLSession.shared.data(from:)`.
-
-May be expanded in the future to abstract away other
-network operations like uploading data or web sockets.
+Since those dependency micropackages are built up as needed by other projects they are usually not going to implement a
+complete wrap of the abstracted API (unless all of it was needed at some point). Feel free to fork and expand if needed,
+and please bring back a PR with any additions you make that may be useful to others.
 
 ## Requirements
 
-MiniDePin doesn't have much in the way of dependencies itself so it can work in whatever the tools support. However some
-of the dependency micropackages require Combine and other newer APIs so the minimum is set to those platform versions.
-
-If SPM every allows for varying deployment requirements per product the base library should be able to just roll out on
-anything supported by the tools.
+GlobalDependencies doesn't have much in the way of dependencies itself so it can work in whatever the tools support.
 
 ### Tools:
 
 * Xcode 14.3 or later.
-* Swift 5.7 or later.
+* Swift 5.8 or later.
 
 ### Platforms:
 
-* iOS 14 or later.
-* macOS Catalyst 14 or later (but why?).
-* macOS 11 or later.
-* tvOS 14 or later.
-* watchOS 7 or later.
+* iOS 11 or later.
+* macOS Catalyst 13 or later (but why?).
+* macOS 10.13 or later.
+* tvOS 11 or later.
+* watchOS 4 or later.
 
 ## Installation
 
-MiniDePin is currently only supported through Swift Package Manager.
+GlobalDependencies is currently only supported through Swift Package Manager.
 
 If developing your own package, you can add the following lines to your `Package.swift` file:
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/Gabardone/MiniDepIn", from: "1.0.0"),
+    .package(url: "https://github.com/Gabardone/GlobalDependencies", from: "2.0.0"),
 ]
 ```
 
-To add to an Xcode project, paste `https://github.com/Gabardone/MiniDepIn` into the URL field for a new package and
-specify "Up to next major version" starting with the current one.
+To add to an Xcode project, paste `https://github.com/Gabardone/GlobalDependencies` into the URL field for a new package
+and specify "Up to next major version" starting with the current one.
 
 ## Contributing
 
-While the MiniDePin package itself works "as-is" and is unlikely to get major changes going forward, I know better than
-to think it can't be improved, so suggestions are welcome especially if they come with examples.
+While the GlobalDependencies package itself works "as-is" and is unlikely to get major changes going forward, I know
+better than to think it can't be improved, so suggestions are welcome especially if they come with examples.
 
 The dependency micropackages can always use more work as they are built as needed. If you find yourself using one but
 improving it, feel free to submit a PR with the changes. Same if you build a generic one for a system service that
-other people could stand to use.
+other people could stand to use. I'll happily point to other people's dependency packages if anyone ends up creating
+any.
 
 Beyond that just take to heart the baseline rules presented in  [contributing guidelines](Contributing.md) prior to
 submitting a Pull Request.
 
-Thanks, and happy queueing!
+Thanks, and happy low friction dependency injection!
 
 ## Developing
 
-Double-click on `Package.swift` in the root of the repository to open the project in Xcode.
+Double-click on `Package.swift` in the root of the repository to open the project in Xcode. Or open the containing
+folder from Xcode (from the command line: `open -a Xcode <path to package folder>` works as well).
