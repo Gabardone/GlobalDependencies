@@ -1,11 +1,12 @@
-// swift-tools-version: 5.8
+// swift-tools-version: 5.9
 // The swift-tools-version declares the minimum version of Swift required to build this package.
 
 import PackageDescription
 
 let package = Package(
     name: "GlobalDependencies",
-    platforms: [ // We require Combine for some of the dependency micropackages so that limits what we support.
+    platforms: [
+        // Currently only limited by tooling & Swift support.
         .iOS(.v11),
         .macCatalyst(.v13),
         .macOS(.v10_13),

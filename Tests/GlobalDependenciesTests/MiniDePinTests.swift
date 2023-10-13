@@ -38,7 +38,9 @@ final class GlobalDependenciesTests: XCTestCase {
         let mockExpectation = expectation(description: "Mock expectation's `test()` called")
         let mockService = MockService(expectation: mockExpectation)
 
-        let testComponent = TestComponent(dependencies: .default.with(override: mockService, for: \.testService))
+        let testComponent = TestComponent(
+            dependencies: .default.with(override: mockService, for: TestServiceDependencyKey.self)
+        )
         testComponent.doTheTest()
 
         waitForExpectations(timeout: 1.0)
@@ -56,7 +58,9 @@ final class GlobalDependenciesTests: XCTestCase {
         let mockExpectation = expectation(description: "Mock expectation's `test()` called")
         let mockService = MockService(expectation: mockExpectation)
 
-        let testComponent = TestComponent(dependencies: .default.with(override: mockService, for: \.testManager))
+        let testComponent = TestComponent(
+            dependencies: .default.with(override: mockService, for: TestManagerDependencyKey.self)
+        )
         let childComponent = testComponent.buildChildComponent()
 
         childComponent.doTheTest()

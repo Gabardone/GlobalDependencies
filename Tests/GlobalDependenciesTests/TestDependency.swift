@@ -27,6 +27,11 @@ class DefaultTestService: TestService {
     }
 }
 
+/// A Dummy dependency key for the dependency protocol.
+struct TestServiceDependencyKey: DependencyKey {
+    static let defaultValue: any TestService = DefaultTestService.shared
+}
+
 /// The associated dependency protocol for the `TestService` protocol. (README Adoption #3)
 protocol TestServiceDependency: Dependencies {
     var testService: any TestService { get }
@@ -35,7 +40,7 @@ protocol TestServiceDependency: Dependencies {
 /// Extend GlobalDependencies to implement `TestServiceDependency` (README Adoption #4)
 extension GlobalDependencies: TestServiceDependency {
     var testService: any TestService {
-        resolveDependency(forKeyPath: \.testService, defaultImplementation: DefaultTestService.shared)
+        resolveDependencyFor(key: TestServiceDependencyKey.self)
     }
 }
 
@@ -68,13 +73,17 @@ struct DefaultTestManager: TestManager {
     }
 }
 
+struct TestManagerDependencyKey: DependencyKey {
+    static let defaultValue: any TestManager = DefaultTestManager()
+}
+
 protocol TestManagerDependency: Dependencies {
     var testManager: any TestManager { get }
 }
 
 extension GlobalDependencies: TestManagerDependency {
     var testManager: TestManager {
-        resolveDependency(forKeyPath: \.testManager, defaultImplementation: DefaultTestManager())
+        resolveDependencyFor(key: TestManagerDependencyKey.self)
     }
 }
 

@@ -27,7 +27,7 @@ public struct GlobalDependencies {
      Dependency storage.
      - Note: Investigate using `GlobalDependencies` as the root type once Swift 5.6 is out.
      */
-    private(set) var overrides = [DependencyKeyPath: Any]()
+    private(set) var overrides = [ObjectIdentifier: Any]()
 }
 
 // MARK: - Dependency resolution
@@ -45,21 +45,18 @@ public extension GlobalDependencies {
      autoclosure so creation of the default can happen lazily and thus avoided if overwritten.
      - Returns: The resolved dependency for the `keyPath` property.
      */
-    func resolveDependency<T>(
-        forKeyPath keyPath: KeyPath<GlobalDependencies, T>,
-        defaultImplementation: @autoclosure () -> T
-    ) -> T {
-        if let existingOverride = overrides[keyPath] {
-            if let typedOverride = existingOverride as? T {
+    func resolveDependencyFor<Key: DependencyKey>(key: Key.Type) -> Key.Value {
+        if let existingOverride = overrides[ObjectIdentifier(key)] {
+            if let typedOverride = existingOverride as? Key.Value {
                 return typedOverride
             } else {
                 // Log that something is wrong.
-                assertionFailure("Dependency override found \(existingOverride) of type \(type(of: existingOverride)). Expected type \(T.self)")
+                assertionFailure("Dependency override found \(existingOverride) of type \(type(of: existingOverride)). Expected type \(key.Value)")
             }
         }
 
         // Fallback to the default implementation.
-        return defaultImplementation()
+        return key.defaultValue
     }
 }
 
@@ -85,8 +82,8 @@ public extension GlobalDependencies {
      - Parameter keyPath The accessor's keypath.
      - Parameter value The overriding instance, of the same —usually `protocol`— type.
      */
-    mutating func override<Value>(keyPath: KeyPath<GlobalDependencies, Value>, with value: Value) {
-        overrides[keyPath] = value
+    mutating func override<Key: DependencyKey>(key: Key.Type, with value: Key.Value) {
+        overrides[ObjectIdentifier(key)] = value
     }
 
     /**
@@ -97,9 +94,9 @@ public extension GlobalDependencies {
      - Returns: A new `GlobalDependencies` identical to the caller but for returning `override` for
      `dependencies[keyPath: keyPath`.
      */
-    func with<Value>(override: Value, for keyPath: KeyPath<GlobalDependencies, Value>) -> GlobalDependencies {
+    func with<Key: DependencyKey>(override: Key.Value, for key: Key.Type) -> GlobalDependencies {
         var updatedDependency = self
-        updatedDependency.override(keyPath: keyPath, with: override)
+        updatedDependency.override(key: key, with: override)
         return updatedDependency
     }
 }
