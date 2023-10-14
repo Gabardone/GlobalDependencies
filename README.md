@@ -264,3 +264,7 @@ Thanks, and happy low friction dependency injection!
 
 Double-click on `Package.swift` in the root of the repository to open the project in Xcode. Or open the containing
 folder from Xcode (from the command line: `open -a Xcode <path to package folder>` works as well).
+
+## How to Use GlobalDependencies
+
+A complete how-to can be found in `Dependencies.swift`
