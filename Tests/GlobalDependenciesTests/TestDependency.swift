@@ -10,31 +10,19 @@ import Foundation
 import XCTest
 
 /// A Dummy dependency protocol to test out the dependency injection system. (README Adoption #1)
+@Dependency()
 protocol TestService {
     func serviceTest()
 }
 
 /// A Default implementation of `TestService`. Configurable. (README Adoption #2)
 class DefaultTestService: TestService {
-    // Keep it accessible for tests, but be sure to always clean up on the way out of the test.
-    static var shared = DefaultTestService()
-
     var testOverride: (() -> Void)?
 
     func serviceTest() {
         // Fail the test if we get a call without having set up a block to expect it.
         testOverride?() ?? XCTFail("Unexpected call to `DefaultTestService.test()`")
     }
-}
-
-/// A Dummy dependency key for the dependency protocol.
-struct TestServiceDependencyKey: DependencyKey {
-    static let defaultValue: any TestService = DefaultTestService.shared
-}
-
-/// The associated dependency protocol for the `TestService` protocol. (README Adoption #3)
-protocol TestServiceDependency: Dependencies {
-    var testService: any TestService { get }
 }
 
 /// Extend GlobalDependencies to implement `TestServiceDependency` (README Adoption #4)
@@ -63,38 +51,31 @@ class TestComponent {
 }
 
 /// Another depdendency for child dependency testing.
-protocol TestManager {
+@Dependency(lowercased: "tlaService", defaultValueType: TestManagerImpl)
+protocol TLAService {
     func managerTest()
 }
 
-struct DefaultTestManager: TestManager {
+struct TestManagerImpl: TLAService {
     func managerTest() {
         XCTFail("No tests expected to call this so far")
     }
 }
 
-struct TestManagerDependencyKey: DependencyKey {
-    static let defaultValue: any TestManager = DefaultTestManager()
-}
-
-protocol TestManagerDependency: Dependencies {
-    var testManager: any TestManager { get }
-}
-
-extension GlobalDependencies: TestManagerDependency {
-    var testManager: TestManager {
-        resolveDependencyFor(key: TestManagerDependencyKey.self)
+extension GlobalDependencies: TLAServiceDependency {
+    var tlaService: any TLAService {
+        resolveDependencyFor(key: TLAServiceDependencyKey.self)
     }
 }
 
 class ChildComponent {
-    private let dependencies: any TestManagerDependency
+    private let dependencies: any TLAServiceDependency
 
     init(dependencies: GlobalDependencies = .default) {
         self.dependencies = dependencies
     }
 
     func doTheTest() {
-        dependencies.testManager.managerTest()
+        dependencies.tlaService.managerTest()
     }
 }

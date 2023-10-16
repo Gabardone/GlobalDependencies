@@ -9,23 +9,6 @@
 import XCTest
 
 final class GlobalDependenciesTests: XCTestCase {
-    override func setUp() {
-        // Replace the "singleton" one in case the prior test messed with it.
-        DefaultTestService.shared = DefaultTestService()
-    }
-
-    func testDefaultDependency() throws {
-        let defaultExpectation = expectation(description: "DefaultTestService.shared.test() called")
-        DefaultTestService.shared.testOverride = {
-            defaultExpectation.fulfill()
-        }
-
-        let testComponent = TestComponent()
-        testComponent.doTheTest()
-
-        waitForExpectations(timeout: 1.0)
-    }
-
     func testOverwrittenDependency() throws {
         struct MockService: TestService {
             func serviceTest() {
@@ -47,7 +30,7 @@ final class GlobalDependenciesTests: XCTestCase {
     }
 
     func testOverwrittenIndirectDependency() throws {
-        struct MockService: TestManager {
+        struct MockService: TLAService {
             func managerTest() {
                 expectation.fulfill()
             }
@@ -59,7 +42,7 @@ final class GlobalDependenciesTests: XCTestCase {
         let mockService = MockService(expectation: mockExpectation)
 
         let testComponent = TestComponent(
-            dependencies: .default.with(override: mockService, for: TestManagerDependencyKey.self)
+            dependencies: .default.with(override: mockService, for: TLAServiceDependencyKey.self)
         )
         let childComponent = testComponent.buildChildComponent()
 

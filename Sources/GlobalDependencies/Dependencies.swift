@@ -83,3 +83,27 @@ public protocol Dependencies {
     /// Build a new ``GlobalDependencies`` from any ``Dependencies``.
     func buildGlobal() -> GlobalDependencies
 }
+
+/**
+ A macro that sets up a dependency based on the protocol it is attached to.
+ - Parameters
+   - lowercased: Optional name of the dependency access property, to be used if it is different than `name` with its
+ first letter in lowercase.
+   - defaultValueType: The type of the default value for the dependency. Must have an initializer with no parameters.
+ */
+@attached(peer, names: suffixed(Dependency), suffixed(DependencyKey))
+public macro Dependency<T>(
+    lowercased: StaticString? = nil,
+    defaultValueType: T.Type
+) = #externalMacro(module: "GlobalDependenciesMacros", type: "DependencyPeers")
+
+/**
+ A macro that sets up a dependency whose default implementation is named as the attached protocol prefixed by `Default`.
+ - Parameters
+   - lowercased: Optional name of the dependency access property, to be used if it is different than `name` with its
+ first letter in lowercase.
+ */
+@attached(peer, names: suffixed(Dependency), suffixed(DependencyKey))
+public macro Dependency(
+    lowercased: StaticString? = nil
+) = #externalMacro(module: "GlobalDependenciesMacros", type: "DependencyPeers")
