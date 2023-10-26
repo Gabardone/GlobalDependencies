@@ -157,4 +157,72 @@ final class DependencyPeersTests: XCTestCase {
         throw XCTSkip("macros are only supported when running tests for the host platform")
         #endif
     }
+
+    func testAccessModifiersAppliedToPeerTypes() throws {
+        #if canImport(GlobalDependenciesMacros)
+        assertMacroExpansion(
+            """
+            @Dependency()
+            fileprivate protocol TestService {
+                func serviceTest()
+            }
+            """,
+            expandedSource: """
+            fileprivate protocol TestService {
+                func serviceTest()
+
+                typealias Dependency = TestServiceDependency
+
+                typealias DependencyKey = TestServiceDependencyKey
+            }
+
+            fileprivate protocol TestServiceDependency: Dependencies {
+                var testService: any TestService {
+                    get
+                }
+            }
+
+            fileprivate struct TestServiceDependencyKey: DependencyKey {
+                static let defaultValue: any TestService = DefaultTestService()
+            }
+            """,
+            macros: testMacros
+        )
+        #else
+        throw XCTSkip("macros are only supported when running tests for the host platform")
+        #endif
+    }
+
+    func testDiagnosticWhenAppliedToNonProtocol() throws {
+        #if canImport(GlobalDependenciesMacros)
+        let declaredExpression =
+            """
+            @Dependency()
+            struct SomeStruct {
+                func serviceTest() {}
+            }
+            """
+        let expandedExpression =
+            """
+            struct SomeStruct {
+                func serviceTest() {}
+            }
+            """
+        assertMacroExpansion(
+            declaredExpression,
+            expandedSource: expandedExpression,
+            diagnostics: [.init(
+                id: DependencyPeers.DiagnosticMessage.nonProtocolDeclaration.diagnosticID,
+                message: DependencyPeers.DiagnosticMessage.nonProtocolDeclaration.message,
+                line: 1,
+                column: 1,
+                severity: .error,
+                highlight: declaredExpression
+            )],
+            macros: testMacros
+        )
+        #else
+        throw XCTSkip("macros are only supported when running tests for the host platform")
+        #endif
+    }
 }

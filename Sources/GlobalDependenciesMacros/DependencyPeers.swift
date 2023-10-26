@@ -17,7 +17,7 @@ extension DependencyPeers: PeerMacro {
     private static let defaultValueTypeLabel = "defaultValueType"
     private static let lowercasedLabel = "lowercased"
 
-    private struct DiagnosticMessage: SwiftDiagnostics.DiagnosticMessage {
+    struct DiagnosticMessage: SwiftDiagnostics.DiagnosticMessage {
         private init(message: String, diagnosticID: String) {
             self.message = message
             self.diagnosticID = .init(domain: "sofware.softuer.GlobalDependencies", id: diagnosticID)
@@ -41,10 +41,10 @@ extension DependencyPeers: PeerMacro {
     }
 
     public static func expansion(
-        of node: SwiftSyntax.AttributeSyntax,
-        providingPeersOf declaration: some SwiftSyntax.DeclSyntaxProtocol,
-        in context: some SwiftSyntaxMacros.MacroExpansionContext
-    ) throws -> [SwiftSyntax.DeclSyntax] {
+        of node: AttributeSyntax,
+        providingPeersOf declaration: some DeclSyntaxProtocol,
+        in context: some MacroExpansionContext
+    ) throws -> [DeclSyntax] {
         let arguments = node.arguments.flatMap { arguments in
             if case let .argumentList(argumentList) = arguments {
                 return argumentList
@@ -53,6 +53,7 @@ extension DependencyPeers: PeerMacro {
             }
         }
 
+        // Extract the protocol name from the protocol declaration.
         guard let protocolDeclaration = declaration.as(ProtocolDeclSyntax.self),
               let protocolName = protocolDeclaration.name.identifier else {
             context.diagnose(.init(
@@ -60,8 +61,11 @@ extension DependencyPeers: PeerMacro {
                 message: DiagnosticMessage.nonProtocolDeclaration,
                 highlights: [Syntax(declaration)]
             ))
-            return [DeclSyntax(declaration)]
+            return []
         }
+
+        // Extract visibility modifiers if any (they will need applying to the peer types for things to work).
+        let accessModifier: DeclModifierSyntax? = protocolDeclaration.modifiers.extractAccessModifier()
 
         // Process the lowercased identifier for the dependency protocol accessor property.
         let lowercasedPropertyIdentifier = arguments.extractLowercasedIdentifier(protocolName: protocolName)
@@ -77,7 +81,7 @@ extension DependencyPeers: PeerMacro {
                     message: DiagnosticMessage.defaultImplementationNotATypeIdentifier,
                     highlights: [Syntax(defaultValueArgument.expression)]
                 ))
-                return [DeclSyntax(declaration)]
+                return []
             }
             defaultValueTypeIdentifier = "\(defaultValueName)"
         } else {
@@ -86,12 +90,12 @@ extension DependencyPeers: PeerMacro {
 
         return [
             """
-            protocol \(raw: protocolName)Dependency: Dependencies {
+            \(raw: accessModifier?.name ?? "")protocol \(raw: protocolName)Dependency: Dependencies {
                 var \(raw: lowercasedPropertyIdentifier): any \(raw: protocolName){ get }
             }
             """,
             """
-            struct \(raw: protocolName)DependencyKey: DependencyKey {
+            \(raw: accessModifier?.name ?? "")struct \(raw: protocolName)DependencyKey: DependencyKey {
                 static let defaultValue: any \(raw: protocolName)= \(raw: defaultValueTypeIdentifier)()
             }
             """
@@ -101,9 +105,9 @@ extension DependencyPeers: PeerMacro {
 
 extension DependencyPeers: MemberMacro {
     public static func expansion(
-        of _: SwiftSyntax.AttributeSyntax,
-        providingMembersOf declaration: some SwiftSyntax.DeclGroupSyntax,
-        in _: some SwiftSyntaxMacros.MacroExpansionContext
+        of _: AttributeSyntax,
+        providingMembersOf declaration: some DeclGroupSyntax,
+        in _: some MacroExpansionContext
     ) throws -> [SwiftSyntax.DeclSyntax] {
         guard let protocolDeclaration = declaration.as(ProtocolDeclSyntax.self),
               let protocolName = protocolDeclaration.name.identifier else {

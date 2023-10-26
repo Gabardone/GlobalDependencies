@@ -52,3 +52,21 @@ extension LabeledExprListSyntax {
         return optional.extractLowercasedIdentifier(protocolName: protocolName)
     }
 }
+
+extension DeclModifierListSyntax {
+    func extractAccessModifier() -> DeclModifierSyntax? {
+        for modifier in self {
+            if case let .keyword(accessModifier) = modifier.name.tokenKind {
+                switch accessModifier {
+                case .public, .fileprivate, .private:
+                    return modifier
+
+                default:
+                    break
+                }
+            }
+        }
+
+        return nil
+    }
+}
