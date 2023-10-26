@@ -6,16 +6,39 @@
 //
 
 import SwiftCompilerPlugin
+import SwiftDiagnostics
 import SwiftSyntax
 import SwiftSyntaxBuilder
 import SwiftSyntaxMacros
 
-public struct DependencyPeers {
-}
+public struct DependencyPeers {}
 
 extension DependencyPeers: PeerMacro {
     private static let defaultValueTypeLabel = "defaultValueType"
     private static let lowercasedLabel = "lowercased"
+
+    private struct DiagnosticMessage: SwiftDiagnostics.DiagnosticMessage {
+        private init(message: String, diagnosticID: String) {
+            self.message = message
+            self.diagnosticID = .init(domain: "sofware.softuer.GlobalDependencies", id: diagnosticID)
+        }
+
+        let message: String
+
+        let diagnosticID: MessageID
+
+        let severity: DiagnosticSeverity = .error
+
+        static let nonProtocolDeclaration = DiagnosticMessage(
+            message: "Dependency macro can only be applied to protocol declarations.",
+            diagnosticID: "non-protocol"
+        )
+
+        static let defaultImplementationNotATypeIdentifier = DiagnosticMessage(
+            message: "Default implementation type parameter must be a concrete type identifier.",
+            diagnosticID: "default-implementation-not-a-type"
+        )
+    }
 
     public static func expansion(
         of node: SwiftSyntax.AttributeSyntax,
@@ -30,55 +53,71 @@ extension DependencyPeers: PeerMacro {
             }
         }
 
-        guard let protocolDeclaration = declaration.as(ProtocolDeclSyntax.self) else {
-            // TODO: Add a diagnostic complaining that this can only be attached to a protocol.
+        guard let protocolDeclaration = declaration.as(ProtocolDeclSyntax.self),
+              let protocolName = protocolDeclaration.name.identifier else {
+            context.diagnose(.init(
+                node: declaration,
+                message: DiagnosticMessage.nonProtocolDeclaration,
+                highlights: [Syntax(declaration)]
+            ))
             return [DeclSyntax(declaration)]
         }
 
-        // The actual protocol name from the decorated declaration.
-        let protocolName = protocolDeclaration.name
-
         // Process the lowercased identifier for the dependency protocol accessor property.
-        let lowercasedPropertyIdentifier: String
-        if let lowercasedArgument = arguments?.first(where: { argument in
-            argument.label?.text == lowercasedLabel
-        }) {
-            guard let lowercasedString = lowercasedArgument.expression.as(StringLiteralExprSyntax.self) else {
-                // This should only happen if the tools f**k up.
-                preconditionFailure()
-            }
-            lowercasedPropertyIdentifier = "\(lowercasedString.segments)"
-        } else {
-            // Just lowercase the first letter.
-            let uppercased = protocolName.text
-            lowercasedPropertyIdentifier = uppercased[uppercased.startIndex].lowercased() + uppercased.dropFirst()
-        }
+        let lowercasedPropertyIdentifier = arguments.extractLowercasedIdentifier(protocolName: protocolName)
 
         // Process the type name for the default implementation.
         let defaultValueTypeIdentifier: String
         if let defaultValueArgument = arguments?.first(where: { argument in
             argument.label?.text == defaultValueTypeLabel
         }) {
-            guard let defaultValueName = defaultValueArgument.expression.as(DeclReferenceExprSyntax.self) else {
-                // TODO: Add a diagnostic complaining that this can only be attached to a type identifier.
+            guard let defaultValueName = defaultValueArgument.expression.asIdentifier else {
+                context.diagnose(.init(
+                    node: defaultValueArgument,
+                    message: DiagnosticMessage.defaultImplementationNotATypeIdentifier,
+                    highlights: [Syntax(defaultValueArgument.expression)]
+                ))
                 return [DeclSyntax(declaration)]
             }
             defaultValueTypeIdentifier = "\(defaultValueName)"
         } else {
-            defaultValueTypeIdentifier = "Default\(protocolName.text)"
+            defaultValueTypeIdentifier = "Default\(protocolName)"
         }
 
         return [
-"""
-protocol \(raw: protocolName.text)Dependency: Dependencies {
-    var \(raw: lowercasedPropertyIdentifier): any \(protocolName){ get }
+            """
+            protocol \(raw: protocolName)Dependency: Dependencies {
+                var \(raw: lowercasedPropertyIdentifier): any \(raw: protocolName){ get }
+            }
+            """,
+            """
+            struct \(raw: protocolName)DependencyKey: DependencyKey {
+                static let defaultValue: any \(raw: protocolName)= \(raw: defaultValueTypeIdentifier)()
+            }
+            """
+        ]
+    }
 }
-""",
-"""
-struct \(raw: protocolName.text)DependencyKey: DependencyKey {
-    static let defaultValue: any \(protocolName)= \(raw: defaultValueTypeIdentifier)()
-}
-"""
+
+extension DependencyPeers: MemberMacro {
+    public static func expansion(
+        of _: SwiftSyntax.AttributeSyntax,
+        providingMembersOf declaration: some SwiftSyntax.DeclGroupSyntax,
+        in _: some SwiftSyntaxMacros.MacroExpansionContext
+    ) throws -> [SwiftSyntax.DeclSyntax] {
+        guard let protocolDeclaration = declaration.as(ProtocolDeclSyntax.self),
+              let protocolName = protocolDeclaration.name.identifier else {
+            // The other macro method will take care of the diagnostic.
+            return []
+        }
+
+        return [
+            """
+            typealias Dependency = \(raw: protocolName)Dependency
+            """,
+            """
+            typealias DependencyKey = \(raw: protocolName)DependencyKey
+            """
         ]
     }
 }

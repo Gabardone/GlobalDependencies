@@ -26,18 +26,15 @@ class DefaultTestService: TestService {
 }
 
 /// Extend GlobalDependencies to implement `TestServiceDependency` (README Adoption #4)
-extension GlobalDependencies: TestServiceDependency {
-    var testService: any TestService {
-        resolveDependencyFor(key: TestServiceDependencyKey.self)
-    }
+extension GlobalDependencies: TestService.Dependency {
+    #GlobalDependency(type: TestService)
 }
 
 /// Dummy component that adopts the dependency (README Adoption #5.1)
+@Dependencies(TestService)
 class TestComponent {
-    private let dependencies: any TestServiceDependency
-
     /// Initializer with dependencies (README Adoption #5.2)
-    init(dependencies: GlobalDependencies = .default) {
+    init(dependencies: Dependencies = GlobalDependencies.default) {
         self.dependencies = dependencies
     }
 
@@ -50,32 +47,13 @@ class TestComponent {
     }
 }
 
-/// Another depdendency for child dependency testing.
-@Dependency(lowercased: "tlaService", defaultValueType: TestManagerImpl)
-protocol TLAService {
-    func managerTest()
-}
-
-struct TestManagerImpl: TLAService {
-    func managerTest() {
-        XCTFail("No tests expected to call this so far")
-    }
-}
-
-extension GlobalDependencies: TLAServiceDependency {
-    var tlaService: any TLAService {
-        resolveDependencyFor(key: TLAServiceDependencyKey.self)
-    }
-}
-
+@Dependencies(TestService, TLAService)
 class ChildComponent {
-    private let dependencies: any TLAServiceDependency
-
-    init(dependencies: GlobalDependencies = .default) {
+    init(dependencies: Dependencies = GlobalDependencies.default) {
         self.dependencies = dependencies
     }
 
     func doTheTest() {
-        dependencies.tlaService.managerTest()
+        dependencies.tlaService.tlaServiceTest()
     }
 }

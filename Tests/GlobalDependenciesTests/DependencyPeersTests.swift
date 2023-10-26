@@ -12,14 +12,14 @@ import XCTest
 #if canImport(GlobalDependenciesMacros)
 @testable import GlobalDependenciesMacros
 
-let testMacros: [String: Macro.Type] = [
+private let testMacros: [String: Macro.Type] = [
     "Dependency": DependencyPeers.self
 ]
 #endif
 
 final class DependencyPeersTests: XCTestCase {
     func testAllDefaultParams() throws {
-#if canImport(GlobalDependenciesMacros)
+        #if canImport(GlobalDependenciesMacros)
         assertMacroExpansion(
             """
             @Dependency()
@@ -30,6 +30,10 @@ final class DependencyPeersTests: XCTestCase {
             expandedSource: """
             protocol TestService {
                 func serviceTest()
+
+                typealias Dependency = TestServiceDependency
+
+                typealias DependencyKey = TestServiceDependencyKey
             }
 
             protocol TestServiceDependency: Dependencies {
@@ -44,9 +48,9 @@ final class DependencyPeersTests: XCTestCase {
             """,
             macros: testMacros
         )
-#else
+        #else
         throw XCTSkip("macros are only supported when running tests for the host platform")
-#endif
+        #endif
     }
 
     func testCustomLowercaseOnly() throws {
@@ -61,6 +65,10 @@ final class DependencyPeersTests: XCTestCase {
             expandedSource: """
             protocol URLThingamajig {
                 func doTheThing()
+
+                typealias Dependency = URLThingamajigDependency
+
+                typealias DependencyKey = URLThingamajigDependencyKey
             }
 
             protocol URLThingamajigDependency: Dependencies {
@@ -80,9 +88,8 @@ final class DependencyPeersTests: XCTestCase {
         #endif
     }
 
-
     func testDefaultValueTypeOnly() throws {
-#if canImport(GlobalDependenciesMacros)
+        #if canImport(GlobalDependenciesMacros)
         assertMacroExpansion(
             """
             @Dependency(defaultValueType: TestServiceImpl)
@@ -93,6 +100,10 @@ final class DependencyPeersTests: XCTestCase {
             expandedSource: """
             protocol TestService {
                 func serviceTest()
+
+                typealias Dependency = TestServiceDependency
+
+                typealias DependencyKey = TestServiceDependencyKey
             }
 
             protocol TestServiceDependency: Dependencies {
@@ -107,9 +118,9 @@ final class DependencyPeersTests: XCTestCase {
             """,
             macros: testMacros
         )
-#else
+        #else
         throw XCTSkip("macros are only supported when running tests for the host platform")
-#endif
+        #endif
     }
 
     func testCustomLowercaseAndDefaultValueType() throws {
@@ -124,6 +135,10 @@ final class DependencyPeersTests: XCTestCase {
             expandedSource: """
             protocol URLThingamajig {
                 func doTheThing()
+
+                typealias Dependency = URLThingamajigDependency
+
+                typealias DependencyKey = URLThingamajigDependencyKey
             }
 
             protocol URLThingamajigDependency: Dependencies {

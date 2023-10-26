@@ -22,7 +22,7 @@ final class GlobalDependenciesTests: XCTestCase {
         let mockService = MockService(expectation: mockExpectation)
 
         let testComponent = TestComponent(
-            dependencies: .default.with(override: mockService, for: TestServiceDependencyKey.self)
+            dependencies: GlobalDependencies.default.with(override: mockService, for: TestServiceDependencyKey.self)
         )
         testComponent.doTheTest()
 
@@ -31,7 +31,7 @@ final class GlobalDependenciesTests: XCTestCase {
 
     func testOverwrittenIndirectDependency() throws {
         struct MockService: TLAService {
-            func managerTest() {
+            func tlaServiceTest() {
                 expectation.fulfill()
             }
 
@@ -42,7 +42,7 @@ final class GlobalDependenciesTests: XCTestCase {
         let mockService = MockService(expectation: mockExpectation)
 
         let testComponent = TestComponent(
-            dependencies: .default.with(override: mockService, for: TLAServiceDependencyKey.self)
+            dependencies: GlobalDependencies.default.with(override: mockService, for: TLAServiceDependencyKey.self)
         )
         let childComponent = testComponent.buildChildComponent()
 
