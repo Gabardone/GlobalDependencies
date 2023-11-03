@@ -1,4 +1,5 @@
 import SwiftCompilerPlugin
+import SwiftDiagnostics
 import SwiftSyntax
 import SwiftSyntaxMacros
 
@@ -69,4 +70,17 @@ extension DeclModifierListSyntax {
 
         return nil
     }
+}
+
+struct DiagnosticMessage: SwiftDiagnostics.DiagnosticMessage {
+    init(message: String, diagnosticID: String) {
+        self.message = message
+        self.diagnosticID = .init(domain: "sofware.softuer.GlobalDependencies", id: diagnosticID)
+    }
+
+    let message: String
+
+    let diagnosticID: MessageID
+
+    let severity: DiagnosticSeverity = .error
 }

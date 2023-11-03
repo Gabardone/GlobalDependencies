@@ -28,7 +28,7 @@ extension TypeDependencies: MemberMacro {
     public static func expansion(
         of node: SwiftSyntax.AttributeSyntax,
         providingMembersOf _: some SwiftSyntax.DeclGroupSyntax,
-        in _: some SwiftSyntaxMacros.MacroExpansionContext
+        in context: some SwiftSyntaxMacros.MacroExpansionContext
     ) throws -> [SwiftSyntax.DeclSyntax] {
         guard case let .argumentList(arguments) = node.arguments else {
             return []
@@ -36,7 +36,17 @@ extension TypeDependencies: MemberMacro {
 
         // Grab the adoptions identifiers.
         let adoptions = arguments.compactMap { element -> String? in
-            element.expression.asIdentifier?.appending(".Dependency")
+            if let identifier = element.expression.asIdentifier {
+                return identifier.appending(".Dependency")
+            } else {
+                // Add diagnostics if it's not an identifier. Further analysis will be on the compiler.
+                context.diagnose(.init(
+                    node: element,
+                    message: DiagnosticMessage.onlyProtocolIdentifiersAllowed,
+                    highlights: [Syntax(element.expression)]
+                ))
+                return nil
+            }
         }
 
         return [
@@ -48,4 +58,11 @@ extension TypeDependencies: MemberMacro {
             """
         ]
     }
+}
+
+extension DiagnosticMessage {
+    static let onlyProtocolIdentifiersAllowed = DiagnosticMessage(
+        message: "Dependencies macro can only take protocol identifiers.",
+        diagnosticID: "only-protocol-identifiers-allowed"
+    )
 }

@@ -6,7 +6,6 @@
 //
 
 import SwiftCompilerPlugin
-import SwiftDiagnostics
 import SwiftSyntax
 import SwiftSyntaxBuilder
 import SwiftSyntaxMacros
@@ -16,29 +15,6 @@ public struct DependencyPeers {}
 extension DependencyPeers: PeerMacro {
     private static let defaultValueTypeLabel = "defaultValueType"
     private static let lowercasedLabel = "lowercased"
-
-    struct DiagnosticMessage: SwiftDiagnostics.DiagnosticMessage {
-        private init(message: String, diagnosticID: String) {
-            self.message = message
-            self.diagnosticID = .init(domain: "sofware.softuer.GlobalDependencies", id: diagnosticID)
-        }
-
-        let message: String
-
-        let diagnosticID: MessageID
-
-        let severity: DiagnosticSeverity = .error
-
-        static let nonProtocolDeclaration = DiagnosticMessage(
-            message: "Dependency macro can only be applied to protocol declarations.",
-            diagnosticID: "non-protocol"
-        )
-
-        static let defaultImplementationNotATypeIdentifier = DiagnosticMessage(
-            message: "Default implementation type parameter must be a concrete type identifier.",
-            diagnosticID: "default-implementation-not-a-type"
-        )
-    }
 
     public static func expansion(
         of node: AttributeSyntax,
@@ -58,7 +34,7 @@ extension DependencyPeers: PeerMacro {
               let protocolName = protocolDeclaration.name.identifier else {
             context.diagnose(.init(
                 node: declaration,
-                message: DiagnosticMessage.nonProtocolDeclaration,
+                message: DiagnosticMessage.nonProtocolAttachee,
                 highlights: [Syntax(declaration)]
             ))
             return []
@@ -124,4 +100,16 @@ extension DependencyPeers: MemberMacro {
             """
         ]
     }
+}
+
+extension DiagnosticMessage {
+    static let nonProtocolAttachee = DiagnosticMessage(
+        message: "Dependency macro can only be applied to protocol declarations.",
+        diagnosticID: "non-protocol-attachee"
+    )
+
+    static let defaultImplementationNotATypeIdentifier = DiagnosticMessage(
+        message: "Default implementation type parameter must be a concrete type identifier.",
+        diagnosticID: "default-implementation-not-a-type"
+    )
 }

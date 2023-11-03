@@ -6,6 +6,7 @@
 //
 
 import SwiftCompilerPlugin
+import SwiftDiagnostics
 import SwiftSyntax
 import SwiftSyntaxBuilder
 import SwiftSyntaxMacros
@@ -15,11 +16,20 @@ struct GlobalDependencyImplementation {}
 extension GlobalDependencyImplementation: DeclarationMacro {
     static func expansion(
         of node: some SwiftSyntax.FreestandingMacroExpansionSyntax,
-        in _: some SwiftSyntaxMacros.MacroExpansionContext
+        in context: some SwiftSyntaxMacros.MacroExpansionContext
     ) throws -> [SwiftSyntax.DeclSyntax] {
-        guard let protocolName = node.argumentList.first?.expression.asIdentifier else {
-            // We should only get here on tool error. Let's BOOM away.
+        guard let protocolArgument = node.argumentList.first else {
+            // This should only happen on tool error. BOOM.
             preconditionFailure()
+        }
+
+        guard let protocolName = protocolArgument.expression.asIdentifier else {
+            context.diagnose(.init(
+                node: protocolArgument,
+                message: DiagnosticMessage.nonProtocolImplementationParameter,
+                highlights: [Syntax(protocolArgument.expression)]
+            ))
+            return []
         }
 
         // Process the lowercased identifier for the dependency protocol accessor property.
@@ -33,4 +43,11 @@ extension GlobalDependencyImplementation: DeclarationMacro {
             """
         ]
     }
+}
+
+extension DiagnosticMessage {
+    static let nonProtocolImplementationParameter = DiagnosticMessage(
+        message: "Global dependency macro parameter can only be a protocol identifier.",
+        diagnosticID: "non-protocol-implementation-parameter"
+    )
 }

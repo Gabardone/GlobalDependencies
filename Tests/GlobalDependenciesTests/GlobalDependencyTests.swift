@@ -61,4 +61,31 @@ final class GlobalDependencyTests: XCTestCase {
         throw XCTSkip("macros are only supported when running tests for the host platform")
         #endif
     }
+
+    func testWithDiagnostics() throws {
+        #if canImport(GlobalDependenciesMacros)
+        assertMacroExpansion(
+            """
+            extension GlobalDependencies: TLAService.Dependency {
+                #GlobalDependency(GiveMeTheType(), lowercased: "tlaService")
+            }
+            """,
+            expandedSource: """
+            extension GlobalDependencies: TLAService.Dependency {
+            }
+            """,
+            diagnostics: [.init(
+                id: GlobalDependenciesMacros.DiagnosticMessage.nonProtocolImplementationParameter.diagnosticID,
+                message: GlobalDependenciesMacros.DiagnosticMessage.nonProtocolImplementationParameter.message,
+                line: 2,
+                column: 23,
+                severity: .error,
+                highlight: "GiveMeTheType()"
+            )],
+            macros: testMacros
+        )
+        #else
+        throw XCTSkip("macros are only supported when running tests for the host platform")
+        #endif
+    }
 }
