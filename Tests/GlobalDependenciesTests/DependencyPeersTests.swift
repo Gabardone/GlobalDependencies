@@ -183,7 +183,8 @@ final class DependencyPeersTests: XCTestCase {
             }
 
             fileprivate struct TestServiceDependencyKey: DependencyKey {
-                static let defaultValue: any TestService = DefaultTestService()
+
+                fileprivate static let defaultValue: any TestService = DefaultTestService()
             }
             """,
             macros: testMacros

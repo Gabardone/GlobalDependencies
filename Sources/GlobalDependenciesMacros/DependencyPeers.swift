@@ -72,7 +72,7 @@ extension DependencyPeers: PeerMacro {
             """,
             """
             \(raw: accessModifier?.name ?? "")struct \(raw: protocolName)DependencyKey: DependencyKey {
-                static let defaultValue: any \(raw: protocolName)= \(raw: defaultValueTypeIdentifier)()
+                \(raw: accessModifier?.name ?? "")static let defaultValue: any \(raw: protocolName)= \(raw: defaultValueTypeIdentifier)()
             }
             """
         ]
