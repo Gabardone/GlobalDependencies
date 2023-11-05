@@ -158,7 +158,77 @@ final class DependencyPeersTests: XCTestCase {
         #endif
     }
 
-    func testAccessModifiersAppliedToPeerTypes() throws {
+    func testAccessModifiersAppliedToPeerTypesFilePublic() throws {
+        #if canImport(GlobalDependenciesMacros)
+        assertMacroExpansion(
+            """
+            @Dependency()
+            public protocol TestService {
+                func serviceTest()
+            }
+            """,
+            expandedSource: """
+            public protocol TestService {
+                func serviceTest()
+
+                typealias Dependency = TestServiceDependency
+
+                typealias DependencyKey = TestServiceDependencyKey
+            }
+
+            public protocol TestServiceDependency: Dependencies {
+                var testService: any TestService {
+                    get
+                }
+            }
+
+            public struct TestServiceDependencyKey: DependencyKey {
+                public static let defaultValue: any TestService = DefaultTestService()
+            }
+            """,
+            macros: testMacros
+        )
+        #else
+        throw XCTSkip("macros are only supported when running tests for the host platform")
+        #endif
+    }
+
+    func testAccessModifiersAppliedToPeerTypesFileInternal() throws {
+        #if canImport(GlobalDependenciesMacros)
+        assertMacroExpansion(
+            """
+            @Dependency()
+            internal protocol TestService {
+                func serviceTest()
+            }
+            """,
+            expandedSource: """
+            internal protocol TestService {
+                func serviceTest()
+
+                typealias Dependency = TestServiceDependency
+
+                typealias DependencyKey = TestServiceDependencyKey
+            }
+
+            internal protocol TestServiceDependency: Dependencies {
+                var testService: any TestService {
+                    get
+                }
+            }
+
+            internal struct TestServiceDependencyKey: DependencyKey {
+                internal static let defaultValue: any TestService = DefaultTestService()
+            }
+            """,
+            macros: testMacros
+        )
+        #else
+        throw XCTSkip("macros are only supported when running tests for the host platform")
+        #endif
+    }
+
+    func testAccessModifiersAppliedToPeerTypesFilePrivate() throws {
         #if canImport(GlobalDependenciesMacros)
         assertMacroExpansion(
             """
@@ -183,7 +253,41 @@ final class DependencyPeersTests: XCTestCase {
             }
 
             fileprivate struct TestServiceDependencyKey: DependencyKey {
+                fileprivate static let defaultValue: any TestService = DefaultTestService()
+            }
+            """,
+            macros: testMacros
+        )
+        #else
+        throw XCTSkip("macros are only supported when running tests for the host platform")
+        #endif
+    }
 
+    func testAccessModifiersAppliedToPeerTypesPrivate() throws {
+        #if canImport(GlobalDependenciesMacros)
+        assertMacroExpansion(
+            """
+            @Dependency()
+            private protocol TestService {
+                func serviceTest()
+            }
+            """,
+            expandedSource: """
+            private protocol TestService {
+                func serviceTest()
+
+                typealias Dependency = TestServiceDependency
+
+                typealias DependencyKey = TestServiceDependencyKey
+            }
+
+            private protocol TestServiceDependency: Dependencies {
+                var testService: any TestService {
+                    get
+                }
+            }
+
+            private struct TestServiceDependencyKey: DependencyKey {
                 fileprivate static let defaultValue: any TestService = DefaultTestService()
             }
             """,

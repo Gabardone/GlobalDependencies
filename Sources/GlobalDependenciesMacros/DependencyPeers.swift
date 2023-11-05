@@ -64,6 +64,17 @@ extension DependencyPeers: PeerMacro {
             defaultValueTypeIdentifier = "Default\(protocolName)"
         }
 
+        // We need a `fileprivate` access modifier for the default key value of a `private` protocol.
+        var defaultValueAccessModifier = accessModifier
+        if case .keyword(let accessKeyword) = accessModifier?.name.tokenKind, accessKeyword == .private {
+            defaultValueAccessModifier?.name.tokenKind = .keyword(.fileprivate)
+        } else {
+            defaultValueAccessModifier = accessModifier
+        }
+
+        // For some reason it may come with a new line above which is not pretty enough.
+        defaultValueAccessModifier?.name.leadingTrivia = .init()
+
         return [
             """
             \(raw: accessModifier?.name ?? "")protocol \(raw: protocolName)Dependency: Dependencies {
@@ -72,7 +83,7 @@ extension DependencyPeers: PeerMacro {
             """,
             """
             \(raw: accessModifier?.name ?? "")struct \(raw: protocolName)DependencyKey: DependencyKey {
-                \(raw: accessModifier?.name ?? "")static let defaultValue: any \(raw: protocolName)= \(raw: defaultValueTypeIdentifier)()
+                \(raw: defaultValueAccessModifier?.name ?? "")static let defaultValue: any \(raw: protocolName) = \(raw: defaultValueTypeIdentifier)()
             }
             """
         ]
