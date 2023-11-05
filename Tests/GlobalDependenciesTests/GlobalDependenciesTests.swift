@@ -29,6 +29,42 @@ final class GlobalDependenciesTests: XCTestCase {
         waitForExpectations(timeout: 1.0)
     }
 
+    func testResetDependencyToDefault() throws {
+        struct MockService: TestService {
+            func serviceTest() {
+                // We're not expected to call this one here.
+                XCTFail("This… isn't… happening!")
+            }
+        }
+
+        let expectation = expectation(description: "Default test service value called successfully.")
+
+        guard let defaultTestService = GlobalDependencies.default.testService as? DefaultTestService else {
+            XCTFail("Uh? default test service dependency not of default type.")
+            return
+        }
+        defaultTestService.testOverride = {
+            expectation.fulfill()
+        }
+        defer {
+            defaultTestService.testOverride = nil
+        }
+
+        let overwrittenDependencies = GlobalDependencies.default.with(
+            override: MockService(),
+            for: TestServiceDependencyKey.self
+        )
+
+        var resetDependencies = overwrittenDependencies
+        resetDependencies.resetToDefault(key: TestServiceDependencyKey.self)
+
+        let testComponent = TestComponent(dependencies: resetDependencies)
+
+        testComponent.doTheTest()
+
+        waitForExpectations(timeout: 1.0)
+    }
+
     func testOverwrittenIndirectDependency() throws {
         struct MockService: TLAService {
             func tlaServiceTest() {

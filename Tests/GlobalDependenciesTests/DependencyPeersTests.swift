@@ -158,6 +158,78 @@ final class DependencyPeersTests: XCTestCase {
         #endif
     }
 
+    func testDiagnosticWhenAppliedToNonProtocol() throws {
+        #if canImport(GlobalDependenciesMacros)
+        let declaredExpression =
+            """
+            @Dependency()
+            struct SomeStruct {
+                func serviceTest() {}
+            }
+            """
+        let expandedExpression =
+            """
+            struct SomeStruct {
+                func serviceTest() {}
+            }
+            """
+        assertMacroExpansion(
+            declaredExpression,
+            expandedSource: expandedExpression,
+            diagnostics: [.init(
+                id: GlobalDependenciesMacros.DiagnosticMessage.nonProtocolAttachee.diagnosticID,
+                message: GlobalDependenciesMacros.DiagnosticMessage.nonProtocolAttachee.message,
+                line: 1,
+                column: 1,
+                severity: .error,
+                highlight: declaredExpression
+            )],
+            macros: testMacros
+        )
+        #else
+        throw XCTSkip("macros are only supported when running tests for the host platform")
+        #endif
+    }
+
+    func testDiagnosticWhenDefaultTypeNotIdentifier() throws {
+        #if canImport(GlobalDependenciesMacros)
+        let declaredExpression =
+            """
+            @Dependency(defaultValueType: GiveMeMyImplType())
+            protocol TestService {
+                func serviceTest()
+            }
+            """
+        let expandedExpression =
+            """
+            protocol TestService {
+                func serviceTest()
+
+                typealias Dependency = TestServiceDependency
+
+                typealias DependencyKey = TestServiceDependencyKey
+            }
+            """
+        assertMacroExpansion(
+            declaredExpression,
+            expandedSource: expandedExpression,
+            diagnostics: [.init(
+                id: GlobalDependenciesMacros.DiagnosticMessage.defaultImplementationNotATypeIdentifier.diagnosticID,
+                message: GlobalDependenciesMacros.DiagnosticMessage.defaultImplementationNotATypeIdentifier.message,
+                line: 1,
+                column: 13,
+                severity: .error,
+                highlight: "GiveMeMyImplType()"
+            )],
+            macros: testMacros
+        )
+        #else
+        throw XCTSkip("macros are only supported when running tests for the host platform")
+        #endif
+    }
+}
+
+extension DependencyPeersTests {
     func testAccessModifiersAppliedToPeerTypesFilePublic() throws {
         #if canImport(GlobalDependenciesMacros)
         assertMacroExpansion(
@@ -228,7 +300,7 @@ final class DependencyPeersTests: XCTestCase {
         #endif
     }
 
-    func testAccessModifiersAppliedToPeerTypesFilePrivate() throws {
+    func testAccessModifiersAppliedToPeerTypesFileprivate() throws {
         #if canImport(GlobalDependenciesMacros)
         assertMacroExpansion(
             """
@@ -291,76 +363,6 @@ final class DependencyPeersTests: XCTestCase {
                 fileprivate static let defaultValue: any TestService = DefaultTestService()
             }
             """,
-            macros: testMacros
-        )
-        #else
-        throw XCTSkip("macros are only supported when running tests for the host platform")
-        #endif
-    }
-
-    func testDiagnosticWhenAppliedToNonProtocol() throws {
-        #if canImport(GlobalDependenciesMacros)
-        let declaredExpression =
-            """
-            @Dependency()
-            struct SomeStruct {
-                func serviceTest() {}
-            }
-            """
-        let expandedExpression =
-            """
-            struct SomeStruct {
-                func serviceTest() {}
-            }
-            """
-        assertMacroExpansion(
-            declaredExpression,
-            expandedSource: expandedExpression,
-            diagnostics: [.init(
-                id: GlobalDependenciesMacros.DiagnosticMessage.nonProtocolAttachee.diagnosticID,
-                message: GlobalDependenciesMacros.DiagnosticMessage.nonProtocolAttachee.message,
-                line: 1,
-                column: 1,
-                severity: .error,
-                highlight: declaredExpression
-            )],
-            macros: testMacros
-        )
-        #else
-        throw XCTSkip("macros are only supported when running tests for the host platform")
-        #endif
-    }
-
-    func testDiagnosticWhenDefaultTypeNotIdentifier() throws {
-        #if canImport(GlobalDependenciesMacros)
-        let declaredExpression =
-            """
-            @Dependency(defaultValueType: GiveMeMyImplType())
-            protocol TestService {
-                func serviceTest()
-            }
-            """
-        let expandedExpression =
-            """
-            protocol TestService {
-                func serviceTest()
-
-                typealias Dependency = TestServiceDependency
-
-                typealias DependencyKey = TestServiceDependencyKey
-            }
-            """
-        assertMacroExpansion(
-            declaredExpression,
-            expandedSource: expandedExpression,
-            diagnostics: [.init(
-                id: GlobalDependenciesMacros.DiagnosticMessage.defaultImplementationNotATypeIdentifier.diagnosticID,
-                message: GlobalDependenciesMacros.DiagnosticMessage.defaultImplementationNotATypeIdentifier.message,
-                line: 1,
-                column: 13,
-                severity: .error,
-                highlight: "GiveMeMyImplType()"
-            )],
             macros: testMacros
         )
         #else

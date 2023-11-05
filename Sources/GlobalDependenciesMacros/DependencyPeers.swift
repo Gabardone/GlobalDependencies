@@ -21,12 +21,10 @@ extension DependencyPeers: PeerMacro {
         providingPeersOf declaration: some DeclSyntaxProtocol,
         in context: some MacroExpansionContext
     ) throws -> [DeclSyntax] {
-        let arguments = node.arguments.flatMap { arguments in
-            if case let .argumentList(argumentList) = arguments {
-                return argumentList
-            } else {
-                return nil
-            }
+        let arguments: LabeledExprListSyntax? = if case let .argumentList(argumentList) = node.arguments {
+            argumentList
+        } else {
+            nil
         }
 
         // Extract the protocol name from the protocol declaration.
@@ -66,10 +64,8 @@ extension DependencyPeers: PeerMacro {
 
         // We need a `fileprivate` access modifier for the default key value of a `private` protocol.
         var defaultValueAccessModifier = accessModifier
-        if case .keyword(let accessKeyword) = accessModifier?.name.tokenKind, accessKeyword == .private {
+        if case let .keyword(accessKeyword) = accessModifier?.name.tokenKind, accessKeyword == .private {
             defaultValueAccessModifier?.name.tokenKind = .keyword(.fileprivate)
-        } else {
-            defaultValueAccessModifier = accessModifier
         }
 
         // For some reason it may come with a new line above which is not pretty enough.

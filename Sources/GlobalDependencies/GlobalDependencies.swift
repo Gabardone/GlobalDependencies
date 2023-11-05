@@ -87,6 +87,17 @@ public extension GlobalDependencies {
     }
 
     /**
+     Resets a dependency property to its default value.
+
+     You shouldn't use this often if at all but in case it is needed this method allows the default implementation of a
+     dependency property to be kept fully private to anyone needing the dependency itself.
+     - Parameter keyPath The accessor's keypath.
+     */
+    mutating func resetToDefault(key: (some DependencyKey).Type) {
+        overrides.removeValue(forKey: ObjectIdentifier(key))
+    }
+
+    /**
      If you only need to override a single dependency for testing purposes, this utility saves a lot of verbosity by
      producing a new global dependencies with the given one injected.
      - Parameter override: The value that will override the dependency for the returned `GlobalDependencies`
