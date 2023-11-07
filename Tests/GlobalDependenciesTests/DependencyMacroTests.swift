@@ -1,5 +1,5 @@
 //
-//  DependencyPeersTests.swift
+//  DependencyMacroTests.swift
 //
 //
 //  Created by Óscar Morales Vivó on 10/15/23.
@@ -13,11 +13,11 @@ import XCTest
 @testable import GlobalDependenciesMacros
 
 private let testMacros: [String: Macro.Type] = [
-    "Dependency": DependencyPeers.self
+    "Dependency": DependencyMacro.self
 ]
 #endif
 
-final class DependencyPeersTests: XCTestCase {
+final class DependencyMacroTests: XCTestCase {
     func testAllDefaultParams() throws {
         #if canImport(GlobalDependenciesMacros)
         assertMacroExpansion(
@@ -43,7 +43,7 @@ final class DependencyPeersTests: XCTestCase {
             }
 
             struct TestServiceDependencyKey: DependencyKey {
-                static let defaultValue: any TestService = DefaultTestService()
+                static let defaultValue: any TestService = DefaultTestServiceValueFactory.makeDefaultValue()
             }
             """,
             macros: testMacros
@@ -78,7 +78,7 @@ final class DependencyPeersTests: XCTestCase {
             }
 
             struct URLThingamajigDependencyKey: DependencyKey {
-                static let defaultValue: any URLThingamajig = DefaultURLThingamajig()
+                static let defaultValue: any URLThingamajig = DefaultURLThingamajigValueFactory.makeDefaultValue()
             }
             """,
             macros: testMacros
@@ -88,11 +88,11 @@ final class DependencyPeersTests: XCTestCase {
         #endif
     }
 
-    func testDefaultValueTypeOnly() throws {
+    func testDefaultValueFactoryOnly() throws {
         #if canImport(GlobalDependenciesMacros)
         assertMacroExpansion(
             """
-            @Dependency(defaultValueType: TestServiceImpl)
+            @Dependency(defaultValueFactory: TestServiceImpl)
             protocol TestService {
                 func serviceTest()
             }
@@ -113,7 +113,7 @@ final class DependencyPeersTests: XCTestCase {
             }
 
             struct TestServiceDependencyKey: DependencyKey {
-                static let defaultValue: any TestService = TestServiceImpl()
+                static let defaultValue: any TestService = TestServiceImpl.makeDefaultValue()
             }
             """,
             macros: testMacros
@@ -123,11 +123,11 @@ final class DependencyPeersTests: XCTestCase {
         #endif
     }
 
-    func testCustomLowercaseAndDefaultValueType() throws {
+    func testCustomLowercaseAndDefaultValueFactory() throws {
         #if canImport(GlobalDependenciesMacros)
         assertMacroExpansion(
             """
-            @Dependency(lowercased: "urlThingamajig", defaultValueType: URLThingamajigImpl)
+            @Dependency(lowercased: "urlThingamajig", defaultValueFactory: URLThingamajigImpl)
             protocol URLThingamajig {
                 func doTheThing()
             }
@@ -148,7 +148,7 @@ final class DependencyPeersTests: XCTestCase {
             }
 
             struct URLThingamajigDependencyKey: DependencyKey {
-                static let defaultValue: any URLThingamajig = URLThingamajigImpl()
+                static let defaultValue: any URLThingamajig = URLThingamajigImpl.makeDefaultValue()
             }
             """,
             macros: testMacros
@@ -195,7 +195,7 @@ final class DependencyPeersTests: XCTestCase {
         #if canImport(GlobalDependenciesMacros)
         let declaredExpression =
             """
-            @Dependency(defaultValueType: GiveMeMyImplType())
+            @Dependency(defaultValueFactory: GiveMeMyImplType())
             protocol TestService {
                 func serviceTest()
             }
@@ -229,7 +229,7 @@ final class DependencyPeersTests: XCTestCase {
     }
 }
 
-extension DependencyPeersTests {
+extension DependencyMacroTests {
     func testAccessModifiersAppliedToPeerTypesFilePublic() throws {
         #if canImport(GlobalDependenciesMacros)
         assertMacroExpansion(
@@ -255,7 +255,7 @@ extension DependencyPeersTests {
             }
 
             public struct TestServiceDependencyKey: DependencyKey {
-                public static let defaultValue: any TestService = DefaultTestService()
+                public static let defaultValue: any TestService = DefaultTestServiceValueFactory.makeDefaultValue()
             }
             """,
             macros: testMacros
@@ -290,7 +290,7 @@ extension DependencyPeersTests {
             }
 
             internal struct TestServiceDependencyKey: DependencyKey {
-                internal static let defaultValue: any TestService = DefaultTestService()
+                internal static let defaultValue: any TestService = DefaultTestServiceValueFactory.makeDefaultValue()
             }
             """,
             macros: testMacros
@@ -325,7 +325,7 @@ extension DependencyPeersTests {
             }
 
             fileprivate struct TestServiceDependencyKey: DependencyKey {
-                fileprivate static let defaultValue: any TestService = DefaultTestService()
+                fileprivate static let defaultValue: any TestService = DefaultTestServiceValueFactory.makeDefaultValue()
             }
             """,
             macros: testMacros
@@ -360,7 +360,7 @@ extension DependencyPeersTests {
             }
 
             private struct TestServiceDependencyKey: DependencyKey {
-                fileprivate static let defaultValue: any TestService = DefaultTestService()
+                fileprivate static let defaultValue: any TestService = DefaultTestServiceValueFactory.makeDefaultValue()
             }
             """,
             macros: testMacros

@@ -1,5 +1,5 @@
 //
-//  TypeDependencies.swift
+//  DependenciesMacro.swift
 //
 //
 //  Created by Óscar Morales Vivó on 10/15/23.
@@ -11,9 +11,9 @@ import SwiftSyntax
 import SwiftSyntaxBuilder
 import SwiftSyntaxMacros
 
-public struct TypeDependencies {}
+public struct DependenciesMacro {}
 
-extension TypeDependencies: MemberMacro {
+extension DependenciesMacro: MemberMacro {
     private enum MacroError: Error {
         case adoptionParameterNotAProtocolIdentifier
 

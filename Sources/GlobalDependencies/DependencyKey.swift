@@ -16,5 +16,5 @@ import Foundation
 public protocol DependencyKey {
     associatedtype Value
 
-    static var defaultValue: Self.Value { get }
+    static var defaultValue: Value { get }
 }

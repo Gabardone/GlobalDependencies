@@ -1,5 +1,5 @@
 //
-//  GlobalDependencyTests.swift
+//  GlobalDependencyMacroTests.swift
 //
 //
 //  Created by Óscar Morales Vivó on 10/22/23.
@@ -13,11 +13,11 @@ import XCTest
 @testable import GlobalDependenciesMacros
 
 private let testMacros: [String: Macro.Type] = [
-    "GlobalDependency": GlobalDependencyImplementation.self
+    "GlobalDependency": GlobalDependencyMacro.self
 ]
 #endif
 
-final class GlobalDependencyTests: XCTestCase {
+final class GlobalDependencyMacroTests: XCTestCase {
     func testWithDefaultParam() throws {
         #if canImport(GlobalDependenciesMacros)
         assertMacroExpansion(

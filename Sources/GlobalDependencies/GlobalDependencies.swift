@@ -111,3 +111,22 @@ public extension GlobalDependencies {
         return updatedDependency
     }
 }
+
+/**
+ Implements a dependency on the `GlobalDependencies` type.
+
+ Since Swift macros cannot (as of Swift 5.9) declare extensions, this macro will be invoked _inside_ a manually declared
+  `extension GlobalDependencies: MyProtocol.Dependency`. And since the macro doesn't have access to its contextual
+ semantics you'll have to repeat the protocol name (`MyProtocol` in this contrived example) in the corresponding
+ parameter of the macro 🤷🏽‍♂️.
+ - Parameters
+   - type: Type of the dependency. Should be the same as the property vended by the dependency protocol that the
+ extension is adopting.
+   - lowercased: Name of the dependency accessor property. You only need to pass a value if it is different than `name`
+ with its first letter lowercased.
+ */
+@freestanding(declaration, names: arbitrary)
+public macro GlobalDependency<T>(type: T.Type, lowercased: StaticString? = nil) = #externalMacro(
+    module: "GlobalDependenciesMacros",
+    type: "GlobalDependencyMacro"
+)

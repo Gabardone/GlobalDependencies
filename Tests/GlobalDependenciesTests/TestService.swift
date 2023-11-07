@@ -25,6 +25,12 @@ class DefaultTestService: TestService {
     }
 }
 
+private struct DefaultTestServiceValueFactory: DefaultDependencyValueFactory {
+    static func makeDefaultValue() -> DefaultTestService {
+        DefaultTestService()
+    }
+}
+
 /// Extend GlobalDependencies to implement `TestServiceDependency` (README Adoption #4)
 extension GlobalDependencies: TestService.Dependency {
     #GlobalDependency(type: TestService)

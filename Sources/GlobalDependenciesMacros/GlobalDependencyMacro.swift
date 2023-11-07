@@ -1,5 +1,5 @@
 //
-//  GlobalDependencyImplementation.swift
+//  GlobalDependencyMacro.swift
 //
 //
 //  Created by Óscar Morales Vivó on 10/19/23.
@@ -11,9 +11,9 @@ import SwiftSyntax
 import SwiftSyntaxBuilder
 import SwiftSyntaxMacros
 
-struct GlobalDependencyImplementation {}
+struct GlobalDependencyMacro {}
 
-extension GlobalDependencyImplementation: DeclarationMacro {
+extension GlobalDependencyMacro: DeclarationMacro {
     static func expansion(
         of node: some SwiftSyntax.FreestandingMacroExpansionSyntax,
         in context: some SwiftSyntaxMacros.MacroExpansionContext

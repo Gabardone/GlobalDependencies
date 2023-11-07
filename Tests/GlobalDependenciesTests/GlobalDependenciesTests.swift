@@ -78,7 +78,7 @@ final class GlobalDependenciesTests: XCTestCase {
         let mockService = MockService(expectation: mockExpectation)
 
         let testComponent = TestComponent(
-            dependencies: GlobalDependencies.default.with(override: mockService, for: TLAServiceDependencyKey.self)
+            dependencies: GlobalDependencies.default.with(override: mockService, for: TLAService.DependencyKey.self)
         )
         let childComponent = testComponent.buildChildComponent()
 

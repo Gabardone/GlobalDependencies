@@ -6,9 +6,9 @@ import SwiftSyntaxMacros
 @main
 struct GlobalDependenciesPlugin: CompilerPlugin {
     let providingMacros: [Macro.Type] = [
-        DependencyPeers.self,
-        GlobalDependencyImplementation.self,
-        TypeDependencies.self
+        DependenciesMacro.self,
+        DependencyMacro.self,
+        GlobalDependencyMacro.self
     ]
 }
 

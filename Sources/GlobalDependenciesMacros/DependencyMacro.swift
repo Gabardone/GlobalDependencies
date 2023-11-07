@@ -1,5 +1,5 @@
 //
-//  DependencyPeers.swift
+//  DependencyMacro.swift
 //
 //
 //  Created by Óscar Morales Vivó on 10/13/23.
@@ -10,10 +10,10 @@ import SwiftSyntax
 import SwiftSyntaxBuilder
 import SwiftSyntaxMacros
 
-public struct DependencyPeers {}
+public struct DependencyMacro {}
 
-extension DependencyPeers: PeerMacro {
-    private static let defaultValueTypeLabel = "defaultValueType"
+extension DependencyMacro: PeerMacro {
+    private static let defaultValueTypeLabel = "defaultValueFactory"
     private static let lowercasedLabel = "lowercased"
 
     public static func expansion(
@@ -59,7 +59,7 @@ extension DependencyPeers: PeerMacro {
             }
             defaultValueTypeIdentifier = "\(defaultValueName)"
         } else {
-            defaultValueTypeIdentifier = "Default\(protocolName)"
+            defaultValueTypeIdentifier = "Default\(protocolName)ValueFactory"
         }
 
         // We need a `fileprivate` access modifier for the default key value of a `private` protocol.
@@ -79,14 +79,14 @@ extension DependencyPeers: PeerMacro {
             """,
             """
             \(raw: accessModifier?.name ?? "")struct \(raw: protocolName)DependencyKey: DependencyKey {
-                \(raw: defaultValueAccessModifier?.name ?? "")static let defaultValue: any \(raw: protocolName) = \(raw: defaultValueTypeIdentifier)()
+                \(raw: defaultValueAccessModifier?.name ?? "")static let defaultValue: any \(raw: protocolName) = \(raw: defaultValueTypeIdentifier).makeDefaultValue()
             }
             """
         ]
     }
 }
 
-extension DependencyPeers: MemberMacro {
+extension DependencyMacro: MemberMacro {
     public static func expansion(
         of _: AttributeSyntax,
         providingMembersOf declaration: some DeclGroupSyntax,

@@ -9,14 +9,22 @@
 import XCTest
 
 /// Another depdendency for child dependency testing.
-@Dependency(lowercased: "tlaService", defaultValueType: TestManagerImpl)
+@Dependency(lowercased: "tlaService", defaultValueFactory: TestManagerImpl)
 protocol TLAService {
     func tlaServiceTest()
 }
 
-struct TestManagerImpl: TLAService {
+struct TestManagerImpl {}
+
+extension TestManagerImpl: TLAService {
     func tlaServiceTest() {
         XCTFail("No tests expected to call this so far")
+    }
+}
+
+extension TestManagerImpl: DefaultDependencyValueFactory {
+    static func makeDefaultValue() -> TestManagerImpl {
+        TestManagerImpl()
     }
 }
 
