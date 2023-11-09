@@ -36,7 +36,7 @@ extension DependenciesMacro: MemberMacro {
 
         // Grab the adoptions identifiers.
         let adoptions = arguments.compactMap { element -> String? in
-            if let identifier = element.expression.asIdentifier {
+            if let identifier = element.expression.asProtocolIdentifier {
                 return identifier.appending(".Dependency")
             } else {
                 // Add diagnostics if it's not an identifier. Further analysis will be on the compiler.

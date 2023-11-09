@@ -23,7 +23,7 @@ final class GlobalDependencyMacroTests: XCTestCase {
         assertMacroExpansion(
             """
             extension GlobalDependencies: TestServiceDependency {
-                #GlobalDependency(TestService)
+                #GlobalDependency(any TestService)
             }
             """,
             expandedSource: """

@@ -23,7 +23,7 @@ extension GlobalDependencyMacro: DeclarationMacro {
             preconditionFailure()
         }
 
-        guard let protocolName = protocolArgument.expression.asIdentifier else {
+        guard let protocolName = protocolArgument.expression.asProtocolIdentifier else {
             context.diagnose(.init(
                 node: protocolArgument,
                 message: DiagnosticMessage.nonProtocolImplementationParameter,

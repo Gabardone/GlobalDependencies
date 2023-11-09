@@ -49,7 +49,7 @@ extension DependencyMacro: PeerMacro {
         if let defaultValueArgument = arguments?.first(where: { argument in
             argument.label?.text == defaultValueTypeLabel
         }) {
-            guard let defaultValueName = defaultValueArgument.expression.asIdentifier else {
+            guard let defaultValueName = defaultValueArgument.expression.asProtocolIdentifier else {
                 context.diagnose(.init(
                     node: defaultValueArgument,
                     message: DiagnosticMessage.defaultImplementationNotATypeIdentifier,

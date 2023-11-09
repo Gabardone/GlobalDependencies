@@ -15,8 +15,25 @@ struct GlobalDependenciesPlugin: CompilerPlugin {
 private let lowercasedLabel = "lowercased"
 
 extension ExprSyntax {
-    var asIdentifier: String? {
-        `as`(DeclReferenceExprSyntax.self)?.baseName.identifier
+    var asProtocolIdentifier: String? {
+        if let identifier = `as`(DeclReferenceExprSyntax.self)?.baseName.identifier {
+            return identifier
+        } else if let someOrAny = `as`(TypeExprSyntax.self)?.type.as(SomeOrAnyTypeSyntax.self),
+                  someOrAny.someOrAnySpecifier.tokenKind == .keyword(.any) {
+            // Strip away the "any" since we're adding it back later. Sometimes Swift makes you put it there.
+            // If Swift 6 figures out a consistent rule for it we'll update the macro.
+            if let identifier = someOrAny.constraint.as(IdentifierTypeSyntax.self),
+               someOrAny.someOrAnySpecifier.tokenKind == .keyword(.any) {
+                // Simple identifier, let's return.
+                return identifier.name.identifier
+            } else {
+                // We currently don't support other cases (i.e. composite protocols like
+                // `any SomeProtocol & SomeOtherProtocol` or `some WhateverProtocol`
+                return nil
+            }
+        } else {
+            return nil
+        }
     }
 }
 
