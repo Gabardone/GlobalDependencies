@@ -92,7 +92,8 @@ public protocol Dependencies {
 
  Initialization being individual to each type means injecting the dependencies will need happen manually, usually by.
  adding a final parameter of the form `dependencies: Dependencies = GlobalDependencies.default` in your initializers.
- - Parameter _: A comma-separated list of dependency protocols. These should be the protocols that have `@Dependency`
+ - Parameters
+   - A comma-separated list of dependency protocols. These should be the protocols that have `@Dependency`
  attached to their declaration, not the generated `*Dependency` protocols
  */
 @attached(member, names: named(Dependencies), named(dependencies))

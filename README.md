@@ -4,12 +4,15 @@
 [![Platforms](https://img.shields.io/badge/platform-ios%20%7C%20osx%20%7C%20watchos%20%7C%20tvos-%23989898)](https://apple.com/developer)
 
 This is a simple dependency injection framework good for managing global dependencies (app-level singletons basically)
-in small and medium-sized apps. It has been used successfully in several small personal projects and a medium sized
-commercially released app.
+in small and medium-sized apps. Its earlier versions have been used successfully in several small personal projects and
+a mid-sized commercially released app.
 
 It's meant to add as little friction as possible to the task of injecting dependencies so early stage apps can still
 take on the benefits of dependency injection (better testability, easier maintenance and changes in dependencies)
 without slowing down the pace of development.
+
+As of version 3 and up, the package leans heavily on the use of Swift macros so support for Xcode 15 and the Swift 5.9
+toolchain or newer are required.
 
 ## Adoption
 
