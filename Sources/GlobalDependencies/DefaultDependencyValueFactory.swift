@@ -38,7 +38,7 @@ public protocol DefaultDependencyValueFactory {
      Since the resulting value is stored in a `static` stored property in `GlobalDependencies` the method should
      normally only be called once, when the dependency is first accessed in `GlobalDependencies.default`.
 
-     However if an overwitten dependency is reset to default using ``GlobalDependencies.resetToDefault(key:)`` a new
+     However if an overwitten dependency is reset to default using ``GlobalDependencies/resetToDefault(key:)`` a new
      call to `makeDefaultValue()` will be made to fetch that reset value.
      */
     static func makeDefaultValue() -> Value
