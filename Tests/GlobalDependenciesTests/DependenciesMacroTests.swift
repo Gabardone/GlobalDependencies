@@ -13,7 +13,7 @@ import XCTest
 @testable import GlobalDependenciesMacros
 
 private let testMacros: [String: Macro.Type] = [
-    "Dependencies": DependenciesMacro.self
+    "Dependencies": InjectedDependenciesMacro.self
 ]
 #endif
 

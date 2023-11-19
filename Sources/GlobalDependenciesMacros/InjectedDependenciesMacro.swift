@@ -1,5 +1,5 @@
 //
-//  DependenciesMacro.swift
+//  InjectedDependenciesMacro.swift
 //
 //
 //  Created by Óscar Morales Vivó on 10/15/23.
@@ -11,9 +11,9 @@ import SwiftSyntax
 import SwiftSyntaxBuilder
 import SwiftSyntaxMacros
 
-public struct DependenciesMacro {}
+public struct InjectedDependenciesMacro {}
 
-extension DependenciesMacro: MemberMacro {
+extension InjectedDependenciesMacro: MemberMacro {
     private enum MacroError: Error {
         case adoptionParameterNotAProtocolIdentifier
 
@@ -62,7 +62,7 @@ extension DependenciesMacro: MemberMacro {
 
 extension DiagnosticMessage {
     static let onlyProtocolIdentifiersAllowed = DiagnosticMessage(
-        message: "Dependencies macro can only take protocol identifiers.",
+        message: "InjectedDependencies macro can only take protocol identifiers.",
         diagnosticID: "only-protocol-identifiers-allowed"
     )
 }

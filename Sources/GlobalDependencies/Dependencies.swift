@@ -23,20 +23,3 @@ public protocol Dependencies {
     /// Build a new ``GlobalDependencies`` from any ``Dependencies``.
     func buildGlobal() -> GlobalDependencies
 }
-
-/**
- A macro that declares the dependencies of the attached type and sets it up for injection.
-
- The macro will declare a `Dependencies` type matching the dependencies for all the given protocols and a
- `private let dependencies: Dependencies` stored property to hold onto them.
-
- Initialization being individual to each type means injecting the dependencies will need happen manually, usually by.
- adding a final parameter of the form `dependencies: Dependencies = GlobalDependencies.default` in your initializers.
- - Parameter _: A comma-separated list of dependency protocols. These should be the protocols that have `@Dependency`
- attached to their declaration, not the generated `*Dependency` protocols
- */
-@attached(member, names: named(Dependencies), named(dependencies))
-public macro Dependencies<each U>(_: repeat (each U).Type) = #externalMacro(
-    module: "GlobalDependenciesMacros",
-    type: "DependenciesMacro"
-)

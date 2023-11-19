@@ -10,7 +10,7 @@ import Foundation
 import XCTest
 
 /// Dummy component that adopts the dependency (README Adoption #5.1)
-@Dependencies(TestService)
+@InjectedDependencies(TestService)
 class TestComponent {
     /// Initializer with dependencies (README Adoption #5.2)
     init(dependencies: Dependencies = GlobalDependencies.default) {
@@ -26,7 +26,7 @@ class TestComponent {
     }
 }
 
-@Dependencies(TestService, TLAService)
+@InjectedDependencies(TestService, TLAService)
 class ChildComponent {
     init(dependencies: Dependencies = GlobalDependencies.default) {
         self.dependencies = dependencies
