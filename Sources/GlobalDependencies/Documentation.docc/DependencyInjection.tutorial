@@ -1,0 +1,13 @@
+@Tutorial(time: 10) {
+    @Intro(title: "Injecting Dependencies") {
+        Potato potato chocolate milk
+    }
+    
+    @Section(title: "Potatoes!") {
+        @Steps {
+            @Step {
+                Potatoes are awesome!
+            }
+        }
+    }
+}

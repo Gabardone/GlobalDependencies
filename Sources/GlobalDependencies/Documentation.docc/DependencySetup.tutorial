@@ -1,0 +1,25 @@
+@Tutorial(time: 15) {
+    @Intro(title: "Setting up a Global Dependency") {
+        This tutorial guides you through a sample set up for a global dependency using the `GlobalDependencies`
+        package. You'll set up all the parts needed for a dependency to be usable, injectable and overridable.
+    }
+    
+    @Section(title: "Declare a Façade Protocol") {
+        @ContentAndMedia {
+            Global dependencies are meant to be façaded with protocols. Your first order of business is to declare an
+            API for them.
+            
+            API design best practices is a subject that can fill books, deservedly, but the good news is that once you
+            have the dependency set up you can modify and update this façade protocol without having to change any of
+            the associated dependency management scaffolding.
+        }
+        
+        @Steps {
+            @Step {
+                What protocols you use as dependency façades is up to the developer. For this tutorial we will be
+                setting up a Clown Management dependency. They have gone Too Far and need to be properly managed. With
+                computers.
+            }
+        }
+    }
+}

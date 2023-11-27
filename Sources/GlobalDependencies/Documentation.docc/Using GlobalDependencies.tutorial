@@ -1,0 +1,38 @@
+@Tutorials(name: "Using GlobalDependencies") {
+    @Intro(title: "Using GlobalDependencies") {
+        Using Global Dependencies is a relatively simple affair but may require some adjustmet in development practices.
+        Dependencies are supposed to be façaded by protocols, which should not be generic. Generic protocols with all
+        `associatedtype` or other type dependencies specified may be used although Swift may require slightly different
+        —supported by GlobalDependencies— syntax for them. 
+        
+        Each dependency will have a one to one correspondence with a protocol that façades its functionality. If for
+        some reason you need two dependencies with the same API you should declare two separate protocols and make a
+        dependency off each one. This can just be done by declaring an empty protocol that adopts another one, but you
+        shouldn't adopt a dependency façade protocol for another one.
+    }
+
+    @Chapter(name: "Setting up a Dependency") {
+        Setting up a dependency is facile e divertente!
+        
+        @Image(source: "Orange", alt: "")
+
+        @TutorialReference(tutorial: "doc:DependencySetup")
+    }
+        
+    @Chapter(name: "Injecting Dependencies") {
+        Setting up a dependency is facile e divertente!
+        
+        @Image(source: "Orange", alt: "")
+        
+        @TutorialReference(tutorial: "doc:DependencyInjection")
+    }
+    
+    @Chapter(name: "Overriding Dependencies") {
+        Overriding a dependency is facile e divertente!
+        
+        @Image(source: "Orange", alt: "")
+        
+        @TutorialReference(tutorial: "doc:DependencyOverride")
+    }
+}
+

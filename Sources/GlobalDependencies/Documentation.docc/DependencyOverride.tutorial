@@ -1,0 +1,13 @@
+@Tutorial(time: 10) {
+    @Intro(title: "Overriding Dependencies") {
+        Mostly for tests, but also for fun!
+    }
+    
+    @Section(title: "Overriding dependencies for tests") {
+        @Steps {
+            @Step {
+                Defrozzle the doohickey
+            }
+        }
+    }
+}

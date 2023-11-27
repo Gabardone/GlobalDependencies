@@ -76,6 +76,22 @@ class MyComponent ... {
 
 ## Topics
 
-### <!--@START_MENU_TOKEN@-->Group<!--@END_MENU_TOKEN@-->
+### Setting up a Dependency
 
-- <!--@START_MENU_TOKEN@-->``Symbol``<!--@END_MENU_TOKEN@-->
+- <doc:DependencySetup>
+- ``Dependency(lowercased:defaultValueFactory:)``
+- ``Dependency(lowercased:)``
+- ``GlobalDependency(type:lowercased:)``
+- ``DefaultDependencyValueFactory``
+- ``Dependencies``
+- ``DependencyKey``
+
+### Injecting Dependencies into Components
+
+- <doc:DependencyInjection>
+- ``InjectedDependencies(_:)``
+
+### Dependency Overrides
+
+- <doc:DependencyOverride>
+- ``GlobalDependencies``
