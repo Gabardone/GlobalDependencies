@@ -32,6 +32,32 @@ final class DependenciesMacroTests: XCTestCase {
             class TestClass {
                 func doTheThing() {}
 
+                typealias Dependencies = any TestService.Dependency & TLAService.Dependency
+
+                private let dependencies: Dependencies
+            }
+            """,
+            macros: testMacros
+        )
+        #else
+        throw XCTSkip("macros are only supported when running tests for the host platform")
+        #endif
+    }
+
+    func testDependenciesTypealiasAccessControl() throws {
+        #if canImport(GlobalDependenciesMacros)
+        assertMacroExpansion(
+            """
+            @Dependencies(TestService, TLAService)
+            public class TestClass {
+                func doTheThing() {}
+            }
+            """,
+            expandedSource:
+            """
+            public class TestClass {
+                func doTheThing() {}
+
                 public typealias Dependencies = any TestService.Dependency & TLAService.Dependency
 
                 private let dependencies: Dependencies
@@ -58,7 +84,7 @@ final class DependenciesMacroTests: XCTestCase {
             class TestClass {
                 func doTheThing() {}
 
-                public typealias Dependencies = any TestService.Dependency & TLAService.Dependency
+                typealias Dependencies = any TestService.Dependency & TLAService.Dependency
 
                 private let dependencies: Dependencies
             }
@@ -84,7 +110,7 @@ final class DependenciesMacroTests: XCTestCase {
             class TestClass {
                 func doTheThing() {}
 
-                public typealias Dependencies = any TestService.Dependency
+                typealias Dependencies = any TestService.Dependency
 
                 private let dependencies: Dependencies
             }

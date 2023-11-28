@@ -27,7 +27,7 @@ extension InjectedDependenciesMacro: MemberMacro {
 
     public static func expansion(
         of node: SwiftSyntax.AttributeSyntax,
-        providingMembersOf _: some SwiftSyntax.DeclGroupSyntax,
+        providingMembersOf declaration: some SwiftSyntax.DeclGroupSyntax,
         in context: some SwiftSyntaxMacros.MacroExpansionContext
     ) throws -> [SwiftSyntax.DeclSyntax] {
         guard case let .argumentList(arguments) = node.arguments else {
@@ -49,9 +49,16 @@ extension InjectedDependenciesMacro: MemberMacro {
             }
         }
 
+        let declarationAccessModifier = declaration.modifiers.extractAccessModifier()
+        let typealiasAccessModifier = if let declarationAccessModifier {
+            "\(declarationAccessModifier)"
+        } else {
+            ""
+        }
+
         return [
             """
-            public typealias Dependencies = any \(raw: adoptions.joined(separator: " & "))
+            \(raw: typealiasAccessModifier)typealias Dependencies = any \(raw: adoptions.joined(separator: " & "))
             """,
             """
             private let dependencies: Dependencies
