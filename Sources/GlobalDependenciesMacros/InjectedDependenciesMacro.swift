@@ -14,6 +14,8 @@ import SwiftSyntaxMacros
 public struct InjectedDependenciesMacro {}
 
 extension InjectedDependenciesMacro: MemberMacro {
+    private static let dependencyAccessLabel = "dependencyAccess"
+
     private enum MacroError: Error {
         case adoptionParameterNotAProtocolIdentifier
 
@@ -34,8 +36,25 @@ extension InjectedDependenciesMacro: MemberMacro {
             return []
         }
 
+        let dependenciesAccessControl: String
+        let adoptionArguments: any Collection<LabeledExprSyntax>
+        if let dependencyAccessArgument = arguments.first(where: { argument in
+            argument.label?.text == dependencyAccessLabel
+        }) {
+            guard let accessIdentifier = dependencyAccessArgument.expression.as(MemberAccessExprSyntax.self) else {
+                // We should only get here by tool error.
+                fatalError()
+            }
+
+            dependenciesAccessControl = accessIdentifier.declName.baseName.text
+            adoptionArguments = arguments.dropFirst()
+        } else {
+            dependenciesAccessControl = "private"
+            adoptionArguments = arguments
+        }
+
         // Grab the adoptions identifiers.
-        let adoptions = arguments.compactMap { element -> String? in
+        let adoptions = adoptionArguments.compactMap { element -> String? in
             if let identifier = element.expression.asProtocolIdentifier {
                 return identifier.appending(".Dependency")
             } else {
@@ -61,7 +80,7 @@ extension InjectedDependenciesMacro: MemberMacro {
             \(raw: typealiasAccessModifier)typealias Dependencies = any \(raw: adoptions.joined(separator: " & "))
             """,
             """
-            private let dependencies: Dependencies
+            \(raw: dependenciesAccessControl) let dependencies: Dependencies
             """
         ]
     }

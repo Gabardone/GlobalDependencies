@@ -1,5 +1,5 @@
 //
-//  DependenciesMacroTests.swift
+//  InjectedDependenciesMacroTests.swift
 //
 //
 //  Created by Óscar Morales Vivó on 10/16/23.
@@ -17,7 +17,7 @@ private let testMacros: [String: Macro.Type] = [
 ]
 #endif
 
-final class DependenciesMacroTests: XCTestCase {
+final class InjectedDependenciesMacroTests: XCTestCase {
     func testAllDefaultParams() throws {
         #if canImport(GlobalDependenciesMacros)
         assertMacroExpansion(
@@ -61,6 +61,32 @@ final class DependenciesMacroTests: XCTestCase {
                 public typealias Dependencies = any TestService.Dependency & TLAService.Dependency
 
                 private let dependencies: Dependencies
+            }
+            """,
+            macros: testMacros
+        )
+        #else
+        throw XCTSkip("macros are only supported when running tests for the host platform")
+        #endif
+    }
+
+    func testDependenciesStoredPropertyAccessControl() throws {
+        #if canImport(GlobalDependenciesMacros)
+        assertMacroExpansion(
+            """
+            @Dependencies(dependencyAccess: .internal, TestService, TLAService)
+            public class TestClass {
+                func doTheThing() {}
+            }
+            """,
+            expandedSource:
+            """
+            public class TestClass {
+                func doTheThing() {}
+
+                public typealias Dependencies = any TestService.Dependency & TLAService.Dependency
+
+                internal let dependencies: Dependencies
             }
             """,
             macros: testMacros
