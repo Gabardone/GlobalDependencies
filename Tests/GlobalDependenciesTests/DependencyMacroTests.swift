@@ -22,7 +22,7 @@ final class DependencyMacroTests: XCTestCase {
         #if canImport(GlobalDependenciesMacros)
         assertMacroExpansion(
             """
-            @Dependency()
+            @Dependency
             protocol TestService {
                 func serviceTest()
             }
@@ -162,7 +162,7 @@ final class DependencyMacroTests: XCTestCase {
         #if canImport(GlobalDependenciesMacros)
         let declaredExpression =
             """
-            @Dependency()
+            @Dependency
             struct SomeStruct {
                 func serviceTest() {}
             }
@@ -234,7 +234,7 @@ extension DependencyMacroTests {
         #if canImport(GlobalDependenciesMacros)
         assertMacroExpansion(
             """
-            @Dependency()
+            @Dependency
             public protocol TestService {
                 func serviceTest()
             }
@@ -269,7 +269,7 @@ extension DependencyMacroTests {
         #if canImport(GlobalDependenciesMacros)
         assertMacroExpansion(
             """
-            @Dependency()
+            @Dependency
             internal protocol TestService {
                 func serviceTest()
             }
@@ -304,7 +304,7 @@ extension DependencyMacroTests {
         #if canImport(GlobalDependenciesMacros)
         assertMacroExpansion(
             """
-            @Dependency()
+            @Dependency
             fileprivate protocol TestService {
                 func serviceTest()
             }
@@ -339,7 +339,7 @@ extension DependencyMacroTests {
         #if canImport(GlobalDependenciesMacros)
         assertMacroExpansion(
             """
-            @Dependency()
+            @Dependency
             private protocol TestService {
                 func serviceTest()
             }

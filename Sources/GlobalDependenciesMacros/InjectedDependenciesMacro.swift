@@ -68,7 +68,11 @@ extension InjectedDependenciesMacro: MemberMacro {
             }
         }
 
-        let declarationAccessModifier = declaration.modifiers.extractAccessModifier()
+        var declarationAccessModifier = declaration.modifiers.extractAccessModifier()
+        if declarationAccessModifier?.name.tokenKind == .keyword(.open) {
+            // Open class types have public dependency type declarations.
+            declarationAccessModifier?.name.tokenKind = .keyword(.public)
+        }
         let typealiasAccessModifier = if let declarationAccessModifier {
             "\(declarationAccessModifier)"
         } else {

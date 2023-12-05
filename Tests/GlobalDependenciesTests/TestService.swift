@@ -10,7 +10,7 @@ import GlobalDependencies
 import XCTest
 
 /// A Dummy dependency protocol to test out the dependency injection system. (README Adoption #1)
-@Dependency()
+@Dependency
 protocol TestService {
     func serviceTest()
 }

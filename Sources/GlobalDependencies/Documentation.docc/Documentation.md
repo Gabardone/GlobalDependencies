@@ -89,7 +89,7 @@ class MyComponent ... {
 ### Injecting Dependencies into Components
 
 - <doc:DependencyInjection>
-- ``InjectedDependencies(_:)``
+- ``InjectedDependencies(dependencyAccess:_:)``
 
 ### Dependency Overrides
 

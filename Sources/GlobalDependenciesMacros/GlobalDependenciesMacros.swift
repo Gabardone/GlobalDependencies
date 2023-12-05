@@ -76,7 +76,7 @@ extension DeclModifierListSyntax {
         for modifier in self {
             if case let .keyword(accessModifier) = modifier.name.tokenKind {
                 switch accessModifier {
-                case .fileprivate, .internal, .private, .public:
+                case .fileprivate, .internal, .private, .public, .open:
                     return modifier
 
                 default:

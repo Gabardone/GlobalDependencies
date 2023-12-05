@@ -1,24 +1,117 @@
 @Tutorial(time: 15) {
+    @XcodeRequirement(
+        title: "Xcode 15",
+        destination: "https://developer.apple.com/download/"
+    )
+
     @Intro(title: "Setting up a Global Dependency") {
         This tutorial guides you through a sample set up for a global dependency using the `GlobalDependencies`
         package. You'll set up all the parts needed for a dependency to be usable, injectable and overridable.
+        
+        The tutorial will also demonstrate how to name types and variables to take additional advantage of the
+        GlobalDependencies macros defaults.
     }
     
-    @Section(title: "Declare a Façade Protocol") {
+    @Section(title: "Before You Begin") {
         @ContentAndMedia {
-            Global dependencies are meant to be façaded with protocols. Your first order of business is to declare an
-            API for them.
-            
-            API design best practices is a subject that can fill books, deservedly, but the good news is that once you
-            have the dependency set up you can modify and update this façade protocol without having to change any of
-            the associated dependency management scaffolding.
+            Declaring the API for a dependency is out of scope for this tutorial, it depends on the needs of your
+            codebase. For the sake of this tutorial we will have already some types related to clown management that we
+            plan on using to manage our app's clown. If your app doesn't manage a clown you're doing it wrong.
         }
         
         @Steps {
             @Step {
-                What protocols you use as dependency façades is up to the developer. For this tutorial we will be
-                setting up a Clown Management dependency. They have gone Too Far and need to be properly managed. With
-                computers.
+                First we'll have a `ClownManager` protocol which declares the API our app needs to manage its clown. To
+                avoid confusion with other protocols required for dependency management we will call this one the
+                "API protocol" throughout the tutorial.
+                @Code(name: "ClownManager.swift", file: "DependencySetup-1-1-ClownManager.swift")
+            }
+            
+            @Step {
+                We also have a default implementation that wraps the clown-as-a-service API from pagliacci.io. We
+                declare it as a class but could be any type as long as it adopts `ClownManager`
+                @Code(name: "PagliacciClownManager.swift", file: "DependencySetup-1-2-PagliacciClownManager.swift")
+            }
+            
+            @Step {
+                Finally as a thinly veiled conceit to demonstrate how the `@Dependency` macro's `lowercased:` parameter
+                works, we will also have a `HONKDevice` protocol for an additional dependency that can be reused by
+                either clowns or geese.
+                @Code(name: "HONKDevice.swift", file: "DependencySetup-1-3-HONKDevice.swift")
+            }
+        }
+    }
+    
+    @Section(title: "Implement the default dependency value factory") {
+        @ContentAndMedia {
+            Before we declare the dependency it's best to ready a default dependency value factory which will be wired
+            up to generate a default value for the dependency the first time it is needed.
+            
+            You can either extend an existing type to adopt the protocol or create a standalone type for the task.
+            
+            It is recommended to do either on the same file where the dependency is declared so it can be declared
+            `private` and thus avoid exposing any deatils of the default dependency value factory implementation.
+            
+            The adoption of this protocol is also often the best place to put any logic that generates a different
+            default implementation depending on i.e. build flags or build configuration. We'll do a sample of that
+            through this tutorial.
+        }
+        
+        @Steps {
+            @Step {
+                You can extend an existing type to adopt ``DefaultDependencyValueFactory``. For example, addimg this to
+                the same file where you'll be declaring the dependency proper:
+                @Code(name: "ClownManager.swift", file: "DependencySetup-2-1-Extension.swift") {}
+            }
+            
+            @Step {
+                Alternatively, you can declare a throwaway type that adopts the protocol and contains the logic.
+                Optionally, you can call it `Default<API Protocol>ValueFactory` which will allow you to omit the
+                `defaultValueFactory` parameter and use the shortened ``Dependency(lowercased:)`` macro.
+                @Code(name: "ClownManager.swift", file: "DependencySetup-2-2-Thunk.swift") {}
+            }
+            
+            @Step {
+                As a final option, if you prefer to package the default value factory implementation away from the
+                dependency declaration, you can just typealias a type with the expected name so you can use the
+                shortened ``Dependency(lowercased:)`` macro.
+                
+                Assume that the code of the first step of this section is elsewhere but accessible from
+                `ClownManager.swift`.
+                @Code(name: "ClownManager.swift", file: "DependencySetup-2-3-Typealias.swift") {}
+            }
+        }
+    }
+    
+    @Section(title: "Attach the @Dependency macro to the API protocol") {
+        @ContentAndMedia {
+            With the default dependency value factory in place, the next step is just to attach the `@Dependency`
+            macro to the API protocol.
+            
+            We will now different use cases and how to use the macro's parameters to deal with them.
+        }
+        
+        @Steps {
+            @Step {
+                The `defaultValueFactory` parameter is used to point the macro to the implementation of the protocol
+                that will produce the default value when requested.
+
+                Applying the macro will generate a dependency protocol and dependency key based on the attachee
+                API protocol.
+                @Code(name: "ClownManager.swift", file: "DependencySetup-3-1-ClownManagerCustomFactory.swift")
+            }
+            
+            @Step {
+                If you have a type named with the pattern `Default<API Protocol>ValueFactory` you can omit the
+                `defaultValueFactory` parameter from the macro and it will automatically catch on it. Here you can see
+                the expanded version of such a use case
+                @Code(name: "ClownManager.swift", file: "DependencySetup-3-2-ClownManagerAllDefaults.swift")
+            }
+            
+            @Step {
+                Finally if your API protocol type starts with an all caps acronym you can adjust the macro behavior so
+                all the generated types will respect Swift naming conventions using the `lowercased` parameter.
+                @Code(name: "HONKDevice.swift", file: "DependencySetup-3-3-HONKDeviceLowercased.swift")
             }
         }
     }

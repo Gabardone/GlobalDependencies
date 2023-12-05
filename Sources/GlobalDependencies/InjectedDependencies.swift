@@ -25,7 +25,9 @@ import Foundation
  attached to their declaration, not their generated `.Dependency` protocols
  */
 @attached(member, names: named(Dependencies), named(dependencies))
-public macro InjectedDependencies<each U>(dependencyAccess: AccessControl = .private, _: repeat (each U).Type) = #externalMacro(
+public macro InjectedDependencies<each U>(
+    dependencyAccess: AccessControl = .private, _: repeat (each U).Type
+) = #externalMacro(
     module: "GlobalDependenciesMacros",
     type: "InjectedDependenciesMacro"
 )
