@@ -115,4 +115,27 @@
             }
         }
     }
+        
+    @Section(title: "Potatoes!") {
+        @ContentAndMedia {
+            Now that all the auxiliary types are defined, we have to add our dependency to `GlobalDependencies` so it
+            will be injectable and overridable. Due to the limitations of Swift macros (as of Swift 5.9) there's a bit
+            more code to write.
+        }
+        
+        @Steps {
+            @Step {
+                You will need to declare an extension to `GlobalDependencies` with the same access as your API Protocol.
+                That extension will adopt `<API protocol>.Dependency`. Its whole implementation can be taken care of by
+                the `#GlobalDependency` macro, with the API protocol as its parameter.
+                @Code(name: "ClownManager.swift", file: "DependencySetup-4-1-GlobalDependencyExtension.swift")
+            }
+
+            @Step {
+                The macro will expand into an implementation of the dependency protocol which accounts for potential
+                overrides.
+                @Code(name: "ClownManager.swift", file: "DependencySetup-4-2-GlobalDependencyExtensionExpanded.swift")
+            }
+        }
+    }
 }
