@@ -17,7 +17,7 @@ private let lowercasedLabel = "lowercased"
 extension ExprSyntax {
     var asProtocolIdentifier: String? {
         if let identifier = `as`(DeclReferenceExprSyntax.self)?.baseName.identifier {
-            return identifier
+            identifier
         } else if let someOrAny = `as`(TypeExprSyntax.self)?.type.as(SomeOrAnyTypeSyntax.self),
                   someOrAny.someOrAnySpecifier.tokenKind == .keyword(.any) {
             // Strip away the "any" since we're adding it back later. Sometimes Swift makes you put it there.
@@ -25,14 +25,14 @@ extension ExprSyntax {
             if let identifier = someOrAny.constraint.as(IdentifierTypeSyntax.self),
                someOrAny.someOrAnySpecifier.tokenKind == .keyword(.any) {
                 // Simple identifier, let's return.
-                return identifier.name.identifier
+                identifier.name.identifier
             } else {
                 // We currently don't support other cases (i.e. composite protocols like
                 // `any SomeProtocol & SomeOtherProtocol` or `some WhateverProtocol`
-                return nil
+                nil
             }
         } else {
-            return nil
+            nil
         }
     }
 }
@@ -40,9 +40,9 @@ extension ExprSyntax {
 extension TokenSyntax {
     var identifier: String? {
         if case let .identifier(result) = tokenKind {
-            return result
+            result
         } else {
-            return nil
+            nil
         }
     }
 }

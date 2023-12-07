@@ -22,7 +22,7 @@ extension InjectedDependenciesMacro: MemberMacro {
         var localizedDescription: String {
             switch self {
             case .adoptionParameterNotAProtocolIdentifier:
-                return "Adoption parameters must be protocol identifiers."
+                "Adoption parameters must be protocol identifiers."
             }
         }
     }

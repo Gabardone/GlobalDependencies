@@ -3,7 +3,7 @@ public class BirthdayParty {
 
     public typealias Dependencies: any ClownManager.Dependency & HONKDevice.Dependency
 
-    internal let dependencies: Dependencies
+    let dependencies: Dependencies
 
     // An unforgettable event happens here.
 }
