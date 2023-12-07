@@ -1,9 +1,9 @@
 protocol ClownManager {
     func honk()
 
-    func slap()
+    func slap(victim: Person)
 
-    func pie(flavor: PieFilling)
+    func pieToFace(pie: Pie, victim: Person)
 
     var shoeSize: Double { get set }
 

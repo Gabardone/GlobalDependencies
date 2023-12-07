@@ -1,12 +1,86 @@
 @Tutorial(time: 10) {
     @Intro(title: "Injecting Dependencies") {
-        Potato potato chocolate milk
+        Once you have your dependencies set up, you'll want to inject them into your codebase's components. The
+        GlobalDependencies package makes it straightforward while ensuring your component's dependencies are well
+        managed and well understood.
+        
+        We will be using the sample types declared in <doc:/tutorials/DependencySetup> as sample dependencies through
+        this tutorial.
     }
     
-    @Section(title: "Potatoes!") {
+    @Section(title: "Attach the InjectedDependencies Macro to Your Component") {
+        @ContentAndMedia {
+            We are creating an app to organize birthday parties and, because we live in a hellish dystopia, we _have_ to
+            have a clown. Therefore our `BirthdayParty` component will depend on our `ClownManager`. The party organizer
+            is also legally obligated to provide the clown with a honking device, which means we'll also have to bring
+            in the `HONKDevice` dependency.
+            
+            Let's see how to set things up!
+        }
+            
         @Steps {
             @Step {
-                Potatoes are awesome!
+                Just attach the ``InjectedDependencies(dependencyAccess:_:)`` macro to our component, with a
+                comma-separated list of its dependencies' API protocols as parameters.
+                @Code(name: "BirthdayParty", file: "DependencyInjection-1-1-InjectedDependencies.swift")
+            }
+            
+            @Step {
+                The macro will declare the dependency type and storage property
+                @Code(name: "BirthdayParty", file: "DependencyInjection-1-2-InjectedDependenciesExpanded.swift")
+            }
+        }
+    }
+        
+    @Section(title: "Adjust Access Control of Your Dependencies If Needed") {
+        @ContentAndMedia {
+            The Dependencies type is declared with the same access as its enclosing component —using `public` for `open`
+            classes instead— since it will be needed for initialization. The stored property is declared `private` by
+            default, but in some cases that may be too restrictive, i.e. if the component's implementation is spread
+            across multiple files. The ``InjectedDependencies(dependencyAccess:_:)`` `dependencyAccess` macro allows for
+            adjustment.
+        }
+        
+        @Steps {
+            @Step {
+                Let's assume that `BirthdayParty` has its implementation spread across several files in the same module.
+                For such a case using `dependencyAccess: .internal` should make sure that those extensions can access
+                `dependencies`
+                @Code(name: "BirthdayParty.swift", file: "DependencyInjection-2-1-AccessControl.swift")
+            }
+
+            @Step {
+                As can be seen from the macro expansion that is the only thing that changes from the default.
+                @Code(name: "BirthdayParty.swift", file: "DependencyInjection-2-2-AccessControlExpanded.swift")
+            }
+        }
+    }
+        
+    @Section(title: "Inject your dependencies on initialization") {
+        @ContentAndMedia {
+            The actual injection should happen on initialization, but because every component has its own
+            initialization needs the macro doesn't generate any code for that. It's still simple enough to set up
+            and the compiler will ensure you perform the injection since `dependencies` is declared as a `let`
+        }
+
+        @Steps {
+            @Step {
+                Most of the time you want to add a `dependencies` parameter to the end of your initializer parameter list,
+                with a type of `Dependencies`. You can add a default value of `GlobalDependencies.default` although
+                most of the time you'll want to avoid using the default.
+                @Code(name: "BirthdayParty.swift", file: "DependencyInjection-3-1-InjectingInitializer.swift")
+            }
+            
+            @Step {
+                To access the injected dependencies you just use `dependencies.<requested dependency>` like in the
+                example.
+                @Code(name: "BirthdayParty.swift", file: "DependencyInjection-3-2-UsingDependencies.swift")
+            }
+            
+            @Step {
+                When building other components, always pass in your dependencies. Use `buildGlobal()` to typecast yours
+                into the ones needed by the component being built.
+                @Code(name: "BirthdayParty.swift", file: "DependencyInjection-3-3-InjectingIntoChild.swift")
             }
         }
     }
