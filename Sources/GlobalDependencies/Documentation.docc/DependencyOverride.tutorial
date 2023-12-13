@@ -1,12 +1,47 @@
 @Tutorial(time: 10) {
     @Intro(title: "Overriding Dependencies") {
-        Mostly for tests, but also for fun!
+        One of the most important reasons to use dependency injection is to make your software components testable by
+        taking control of the dependencies' side effects during testing. Any dependencies you manage through
+        GlobalDependencies are simple to override during tests with the provided API.
+        
+        It is also possible to use these techniques in real-world logic but it's not generally recommended. When
+        possible encapsulate any logic that may swap the value of an app's dependency depending on the environment where
+        the app is being run inside its `DefaultDependencyValueProvider`.
     }
     
-    @Section(title: "Overriding dependencies for tests") {
+    @Section(title: "Set up a Mock Dependency Implementation") {
+        @ContentAndMedia {
+            Before you mock a dependency you need a mock type. What exactly you use as such is out of the scope of
+            the `GlobalDependencies` package, we're offering one here for sample purposes but there is no obligation to
+            follow the practices used for it.
+        }
+
         @Steps {
             @Step {
-                Defrozzle the doohickey
+                For the examples in this tutorial we'll be declaring a `MockClownManager` type that replaces the whole
+                API with configurable blocks and fails if any are called without being configured.
+                @Code(name: "BirthdayPartyTests.swift", file: "DependencyOverride-1-1-MockClownManager.swift")
+            }
+        }
+    }
+        
+    @Section(title: "Build a `GlobalDependencies` Value With Your Overrides") {
+        @ContentAndMedia {
+            With a mock in place, all you'll need to apply it is to generate a new value of `GlobalDependencies` that
+            overrides the dependency with your mock and inject it into the component through initialization.
+        }
+        
+        @Steps {
+            @Step {
+                For a single dependency override it's easiest to use `GlobalDependencies.with(override:for:)`. In this
+                example we're setting up an override of the `ClownManager` in a test.
+                @Code(name: "BirthdayPartyTests.swift", file: "DependencyOverride-2-1-SingleOverride.swift")
+            }
+            
+            @Step {
+                For multiple overrides it's better to just use Swift's value type semantics to build up a
+                `GlobalDependencies` value with all the overrides you need.
+                @Code(name: "BirthdayPartyTests.swift", file: "DependencyOverride-2-2-MultipleOverride.swift")
             }
         }
     }
