@@ -1,0 +1,1 @@
+private typealias DefaultClownManagerValueFactory = PagliacciClownManager

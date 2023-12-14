@@ -1,0 +1,36 @@
+@Tutorials(name: "Using GlobalDependencies") {
+    @Intro(title: "Using GlobalDependencies") {
+        The GlobalDependencies package helps abstract away global dependencies, inject them into components and
+        override them for test mocking purposes. The following tutorials detail how to perform each of those tasks.
+    }
+
+    @Chapter(name: "Setting up a Dependency") {
+        Declaring a global dependency is a relatively simple affair. A protocol is declared for each dependency, a
+        default implementation is defined, and everything else is wired up using the
+        ``Dependency(lowercased:defaultValueFactory:)`` and ``GlobalDependency(type:lowercased:)`` macros.
+        
+        @Image(source: "Corte", alt: "")
+
+        @TutorialReference(tutorial: "doc:DependencySetup")
+    }
+        
+    @Chapter(name: "Injecting Dependencies") {
+        Injecting those dependencies just requires attaching the
+        ``InjectedDependencies(dependencyAccess:_:)`` macro to a type, with the specific
+        dependencies needed as its parameters.
+        
+        @Image(source: "Corte", alt: "")
+        
+        @TutorialReference(tutorial: "doc:DependencyInjection")
+    }
+    
+    @Chapter(name: "Overriding Dependencies") {
+        Finally, to override dependencies you can modify the current ``GlobalDependencies`` value and pass a modified
+        version into any components. This is usually done only for testing but the technique may be used elsewhere.
+        
+        @Image(source: "Corte", alt: "")
+        
+        @TutorialReference(tutorial: "doc:DependencyOverride")
+    }
+}
+
