@@ -11,7 +11,7 @@ It's meant to add as little friction as possible to the task of injecting depend
 take on the benefits of dependency injection (better testability, easier maintenance and changes in dependencies)
 without slowing down the pace of development.
 
-As of version 3 and up, the package leans heavily on the use of Swift macros so support for Xcode 15 and the Swift 5.9
+As of version 2 and up, the package leans heavily on the use of Swift macros so support for Xcode 15 and the Swift 5.9
 toolchain or newer are required.
 
 ## Requirements
@@ -39,7 +39,7 @@ If developing your own package, you can add the following lines to your `Package
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/Gabardone/GlobalDependencies", from: "3.0.0"),
+    .package(url: "https://github.com/Gabardone/GlobalDependencies", from: "2.0.0"),
 ]
 ```
 
