@@ -9,7 +9,7 @@
         default implementation is defined, and everything else is wired up using the
         ``Dependency(lowercased:defaultValueFactory:)`` and ``GlobalDependency(type:lowercased:)`` macros.
         
-        @Image(source: "Orange", alt: "")
+        @Image(source: "Corte", alt: "")
 
         @TutorialReference(tutorial: "doc:DependencySetup")
     }
@@ -19,7 +19,7 @@
         ``InjectedDependencies(dependencyAccess:_:)`` macro to a type, with the specific
         dependencies needed as its parameters.
         
-        @Image(source: "Orange", alt: "")
+        @Image(source: "Corte", alt: "")
         
         @TutorialReference(tutorial: "doc:DependencyInjection")
     }
@@ -28,7 +28,7 @@
         Finally, to override dependencies you can modify the current ``GlobalDependencies`` value and pass a modified
         version into any components. This is usually done only for testing but the technique may be used elsewhere.
         
-        @Image(source: "Orange", alt: "")
+        @Image(source: "Corte", alt: "")
         
         @TutorialReference(tutorial: "doc:DependencyOverride")
     }

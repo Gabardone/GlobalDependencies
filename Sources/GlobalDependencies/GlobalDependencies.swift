@@ -120,8 +120,7 @@ public extension GlobalDependencies {
  semantics you'll have to repeat the protocol name (`MyProtocol` in this contrived example) in the corresponding
  parameter of the macro 🤷🏽‍♂️.
  - Parameters
-   - type: Type of the dependency. Should be the same as the property vended by the dependency protocol that the
- extension is adopting.
+   - type: Type of the dependency. Should be the API protocol that the dependency is declared around.
    - lowercased: Name of the dependency accessor property. You only need to pass a value if it is different than `type`
  with its first letter lowercased.
  */

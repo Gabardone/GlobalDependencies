@@ -8,10 +8,10 @@
 import Foundation
 
 /**
- A key for accessing individual dependencies, based on `SwiftUI.EnvironmentKey`
+ A key for accessing individual dependencies from a `GlobalDependencies` bag.
 
- Dependencies work similarly to SwiftUI's environment and thus they can be keyed similarly to ensure both uniqueness
- when extending `GlobalDependencies` and safe access to them.
+ Dependencies work similarly to SwiftUI's environment (`SwiftUI.EnvironmentKey`) and thus they can be keyed similarly
+ to ensure both uniqueness when extending `GlobalDependencies` and safe access to them.
 
  Normally implementations of this type will be created by the ``Dependency(lowercased:defaultValueFactory:)`` macro and
  the implementation will use the ``DefaultDependencyValueFactory`` protocol to feed `defaultValue`. But a manual

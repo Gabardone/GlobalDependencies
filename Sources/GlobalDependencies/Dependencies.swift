@@ -15,9 +15,9 @@ import Foundation
  components without needing to know what dependencies they require are or make dependencies transitive.
 
  Most of the time implementations of this protocol will be built by applying the
- ``Dependency(lowercased:defaultValueFactory:)`` macro to a protocol that declares the actual dependency functionality,
- but if that is not viable for some reason please 1) file a ticket and 2) Build it manually as close as done by the
- macro itself as possible.
+ ``Dependency(lowercased:defaultValueFactory:)`` macro to a protocol that declares the actual dependency functionality
+ —what we call the "API protocol" throughout the documentation—, but if that is not viable for some reason please
+ 1) file a ticket and 2) Build it manually as close as done by the macro itself as possible.
  */
 public protocol Dependencies {
     /// Build a new ``GlobalDependencies`` from any ``Dependencies``.
