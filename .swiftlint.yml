@@ -1,3 +1,6 @@
+excluded:
+    - .build
+
 identifier_name:
   excluded: # excluded via string array, include xyz for geometry operations.
     - id

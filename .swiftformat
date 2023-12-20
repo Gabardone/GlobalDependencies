@@ -2,7 +2,7 @@
 
 --swiftversion 5.9
 
---exclude Source/GlobalDependencies/Documentation.docc
+--exclude Source/GlobalDependencies/Documentation.docc,.build
 
 # Fix rules that conflict with swiftlint defaults.
 --commas inline # Swiftlint calls for no final comma on collections.
