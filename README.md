@@ -50,7 +50,11 @@ and specify "Up to next major version" starting with the current one.
 
 The package is fully documented, including tutorials for expected use.
 
-Open the package with Xcode, select `Product -> Build Documentation` and enjoy.
+You can find an online version of the documentation at
+https://gabardone.github.io/GlobalDependencies/documentation/globaldependencies/
+
+When developing on Xcode with the dependency installed you can also select `Product -> Build Documentation` which will
+add the package's documentation to the contents of the Xcode documentation viewer.
 
 ## Dependency Micropackages
 
