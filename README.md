@@ -56,6 +56,83 @@ https://gabardone.github.io/GlobalDependencies/documentation/globaldependencies/
 When developing on Xcode with the dependency installed you can also select `Product -> Build Documentation` which will
 add the package's documentation to the contents of the Xcode documentation viewer.
 
+## Quick Start
+
+It may look like a lot of steps but in reality it's a few minutes work overall, and once it's set up further work has
+negligible further friction. For more detailed explanation look in the official documentation for the package.
+
+1. Declare a protocol that vends the API from your dependency. We'll call it the API protocol (`MyAPIProtocol` as an
+example through this quick start).
+
+2. Make sure there's a default implementation of the protocol that will be the one used by default by your running code.
+For convenience name it either by itself or through `typealias` something like `DefaultMyAPIProtocol`.
+
+3. Add the GlobalDependencies package to your project dependencies, `import GlobalDependencies` where your API protocol
+is declared.
+
+4. Ensure your default implementation of your API protocol adopts the `DefaultDependencyValueFactory` protocol returning
+a value that is compatible with `any MyAPIProtocol`
+
+5. Attach the `@Dependency` macro to your API protocol as follows:
+
+```swift
+@Dependency
+protocol MyDependencyProtocol {
+    /* ... */
+}
+```
+
+6. Extend `GlobalDepedencies` to adopt `MyAPIProtocol.Dependency` as follows:
+
+```swift
+extension GlobalDependencies: MyAPIProtocol.Dependency {
+    #GlobalDependency(type: MyAPIProtocol)
+}
+```
+
+7. On whichever types you want to inject that dependency attach the `@InjectedDependency` macro with `MyAPIProtocol` as
+one of its parameters
+
+```swift
+@InjectedDependencies(MyAPIProtocol)
+class MyComponent {
+    /* ... */
+}
+```
+
+8. You'll want to add a `Dependencies` parameter to your component's initializer.
+
+```swift
+@InjectedDependencies(MyAPIProtocol)
+class MyComponent {
+    init(/* more parameters */, dependencies: Dependencies) {
+        self.dependencies = dependencies
+        /* ... */
+    }
+
+    /* ... */
+}
+```
+
+9. Access your injected dependency just by extracting it from your component's `dependencies`
+
+```swift
+@InjectedDependencies(MyAPIProtocol)
+class MyComponent {
+    /* ... */
+    
+    func doAThing() {
+        /* ... */
+
+        dependencies.myAPIProtocol.doSomething()
+
+        /* ... */
+    }
+
+    /* ... */
+}
+```
+
 ## Dependency Micropackages
 
 In addition to the base GlobalDependencies package itself, we are building as needed a number of common system framework
