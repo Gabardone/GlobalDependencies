@@ -1,6 +1,6 @@
 # ``GlobalDependencies``
 
-<!--@START_MENU_TOKEN@-->Summary<!--@END_MENU_TOKEN@-->
+A simple, low friction dependency injection package for small and medium project needs.  
 
 ## Overview
 
